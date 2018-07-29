@@ -11,8 +11,7 @@ class FitCurveToData extends ML {
      * @memberof ML
      */
     constructor(formula, toLearn, def = []) {
-        super()
-        this.formula = formula;
+        super(formula)
         this.toLearn = toLearn;
 
         var arr = this.getTolearnNum(formula, toLearn);
@@ -23,7 +22,7 @@ class FitCurveToData extends ML {
     }
     defineSevenTimeSeries() {
         const sevenSteps = [
-            { figureOutFeatures: this.getFeaturesEval },
+            { figureOutFeatures: super.getFeaturesEval },
             this.iniPredict,
             this.generateTrainTarget,
             {
@@ -31,7 +30,7 @@ class FitCurveToData extends ML {
             },
             this.gengerateOptimizer,
             { sixthStep: this.calMetricDerivatives },
-            { sevenFeedData: this.train }
+//             { sevenFeedData: super.tfTrain }
         ];
         return sevenSteps;
     }
@@ -185,14 +184,7 @@ class FitCurveToData extends ML {
             y: y
         }
     }
-    getFeaturesEval(arr, val) {
-        const strNoCoeff = arr.reduce((accumulator, item) => {
-            return accumulator.replace(this.toLearn, item);
-        }
-            , this.formula);
-        const formulaStr = strNoCoeff.replace(/x/g, `(${val})`);
-        return math.eval(formulaStr);
-    }
+
 
     async doALearning() {
         const that = this;
@@ -204,7 +196,7 @@ class FitCurveToData extends ML {
         const numIterations = parseInt(document.getElementById('iterations').value || 75);
 
         // Use the training data, and do numIteration passes over it. 
-        await this.sevenFeedData.call(this, tf.tensor1d(this.training.x), tf.tensor1d(this.training.y), numIterations);
+        await this.sevenFeedData(tf.tensor1d(this.training.x), tf.tensor1d(this.training.y), numIterations);
 
         // Once that is done, this has updated our coefficients! 
         // Here you could see what our predictions look like now, and use them!
@@ -219,24 +211,7 @@ class FitCurveToData extends ML {
         // plot();
 
     }
-    /*
-         * This does the training of the model.
-         */
-    async train(xs, ys, numIterations) {
-        for (let iter = 0; iter < numIterations; iter++) {
-            // Plot where we are at this step.
-            // const coeff = {
-            //     a: a.dataSync()[0],
-            //     b: b.dataSync()[0],
-            //     c: c.dataSync()[0],
-            //     d: d.dataSync()[0],
-            // };
-            this.sixthStep(xs, ys);
-
-            // Use tf.nextFrame to not block the browser.
-            await tf.nextFrame();
-        }
-    }
+   
     /*
          * Predicts all the y values for all the x values.
          */
