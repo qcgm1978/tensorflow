@@ -2,7 +2,7 @@
  * fit a curve to a bunch of data
  * @class ML
  */
-class ML {
+class FitCurveToData extends ML {
     /**
      * Implement ML ini, plot and learn
      * @param  {string} formula the secret formula, parsed by math.js
@@ -10,25 +10,32 @@ class ML {
      * @param  {array} def initial data set
      * @memberof ML
      */
-    constructor(formula, toLearn, def=[]) {
+    constructor(formula, toLearn, def = []) {
+        super()
         this.formula = formula;
         this.toLearn = toLearn;
 
         var arr = this.getTolearnNum(formula, toLearn);
         this.def = this.getDef(arr, def);
-        this.execPattern()
+        super.generatePattern(this.defineSevenTimeSeries())
 
         this.plot()
     }
-    execPattern() {
-        this.figureOutFeatures = this.getFeaturesEval;
-        this.iniPredict();
-        this.generateTrainTarget();
-        this.watchLoops = this.getCloser;
-        this.gengerateOptimizer();
-        this.sixthStep = this.calMetricDerivatives;
-        this.sevenFeedData=this.train;
+    defineSevenTimeSeries() {
+        const sevenSteps = [
+            { figureOutFeatures: this.getFeaturesEval },
+            this.iniPredict,
+            this.generateTrainTarget,
+            {
+                watchLoops: this.getCloser
+            },
+            this.gengerateOptimizer,
+            { sixthStep: this.calMetricDerivatives },
+            { sevenFeedData: this.train }
+        ];
+        return sevenSteps;
     }
+
     getDef(arr, def) {
         let arrIniCoffies = [];
         if (arr.length === def.length) {
@@ -37,7 +44,7 @@ class ML {
             arrIniCoffies = def.slice(0, arr.length);
         } else {
             const arrCoffies = new Array(arr.length - def.length);
-            const arrInit = arrCoffies.fill(0).map(item=>ML.getRandomArbitrary(-1, 1));
+            const arrInit = arrCoffies.fill(0).map(item => ML.getRandomArbitrary(-1, 1));
             arrIniCoffies = def.concat(arrInit);
         }
         return arrIniCoffies;
@@ -111,8 +118,8 @@ class ML {
     }
     getTolearnNum(formula, toLearn) {
         const len = formula.length;
-        const reg = new RegExp(toLearn,'g')
-          , arr = [];
+        const reg = new RegExp(toLearn, 'g')
+            , arr = [];
         for (let i = 0; i < len; i++) {
             const match = reg.exec(formula);
             if (match) {
@@ -125,7 +132,7 @@ class ML {
         return arr;
     }
     getArray(arr) {
-        return arr.map(item=>item.dataSync()[0])
+        return arr.map(item => item.dataSync()[0])
     }
     iniRandom(len) {
         const arr = []
@@ -153,7 +160,7 @@ class ML {
             x[i] = xs.get(i);
             // goes from a TF tensor (i.e. array) to a number.
         }
-        x = x.sort(function(a, b) {
+        x = x.sort(function (a, b) {
             return a - b
         })
 
@@ -179,10 +186,10 @@ class ML {
         }
     }
     getFeaturesEval(arr, val) {
-        const strNoCoeff = arr.reduce((accumulator,item)=>{
+        const strNoCoeff = arr.reduce((accumulator, item) => {
             return accumulator.replace(this.toLearn, item);
         }
-        , this.formula);
+            , this.formula);
         const formulaStr = strNoCoeff.replace(/x/g, `(${val})`);
         return math.eval(formulaStr);
     }
@@ -197,7 +204,7 @@ class ML {
         const numIterations = parseInt(document.getElementById('iterations').value || 75);
 
         // Use the training data, and do numIteration passes over it. 
-        await this.sevenFeedData.call(this,tf.tensor1d(this.training.x),tf.tensor1d(this.training.y),numIterations);
+        await this.sevenFeedData.call(this, tf.tensor1d(this.training.x), tf.tensor1d(this.training.y), numIterations);
 
         // Once that is done, this has updated our coefficients! 
         // Here you could see what our predictions look like now, and use them!
@@ -238,7 +245,7 @@ class ML {
         // Calculate a y according to the formula
         // y = a * x ^ 3 + b * x ^ 2 + c * x + d
         // where a, b, c, d are the coefficients we have currently calculated.
-        return tf.tidy(()=>{
+        return tf.tidy(() => {
             const result = that.iniRandomArr[0].mul(x.pow(tf.scalar(3, 'int32'))).add(that.iniRandomArr[1].mul(x.square())).add(that.iniRandomArr[2].mul(x)).add(that.iniRandomArr[3]);
             return result;
         }
@@ -283,7 +290,7 @@ class ML {
     }
 
     getCloser(xs, ys) {
-        this.optimizer.minimize(()=>{
+        this.optimizer.minimize(() => {
             // Using our estimated coeff, predict all the ys for all the xs 
             const pred = this.predict(xs);
             // Need to return the loss i.e how bad is our prediction from the 
@@ -298,5 +305,5 @@ ML.private = {
     NUM_POINTS: 100,
 
 }
-const ml = new ML('coef*x^3+coef*x^2+coef*x+coef','coef',[-0.8, -0.2, 0.9, 0.7, -0.5]);
+const ml = new FitCurveToData('coef*x^3+coef*x^2+coef*x+coef', 'coef', [-0.8, -0.2, 0.9, 0.7, -0.5]);
 const doALearning = ml.doALearning.bind(ml);
