@@ -2,7 +2,10 @@
  * Implement sevent ML methods
  * @class ML
  */
-class ML {
+// import 'babel-polyfill';
+import * as tf from '@tensorflow/tfjs';
+import * as math from 'mathjs'
+export default class ML {
     constructor(formula) {
         this.formula = formula;
 
@@ -15,8 +18,8 @@ class ML {
     generatePattern(sevenSteps) {
         if (sevenSteps.length < 6) {
             throw Error('Not Sevent ML methods')
-        }else if(sevenSteps.length===6){
-            sevenSteps.push( { sevenFeedData: this.tfTrain })
+        } else if (sevenSteps.length === 6) {
+            sevenSteps.push({ sevenFeedData: this.tfTrain })
         }
         for (let item of sevenSteps) {
             if (item instanceof Function) {
@@ -34,9 +37,7 @@ class ML {
         const formulaStr = strNoCoeff.replace(/x/g, `(${val})`);
         return math.eval(formulaStr);
     }
-     /*
-         * This does the training of the model.
-         */
+
     async tfTrain(xs, ys, numIterations) {
         for (let iter = 0; iter < numIterations; iter++) {
             // Plot where we are at this step.

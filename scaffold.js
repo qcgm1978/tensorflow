@@ -2,6 +2,11 @@
  * fit a curve to a bunch of data
  * @class ML
  */
+// import 'babel-polyfill';
+import './style.css'
+import * as tf from '@tensorflow/tfjs';
+import ML from './ML';
+import Plotly from 'plotly.js-geo-dist';
 class FitCurveToData extends ML {
     /**
      * Implement ML ini, plot and learn
@@ -30,7 +35,7 @@ class FitCurveToData extends ML {
             },
             this.gengerateOptimizer,
             { sixthStep: this.calMetricDerivatives },
-//             { sevenFeedData: super.tfTrain }
+            //             { sevenFeedData: super.tfTrain }
         ];
         return sevenSteps;
     }
@@ -211,7 +216,7 @@ class FitCurveToData extends ML {
         // plot();
 
     }
-   
+
     /*
          * Predicts all the y values for all the x values.
          */
@@ -281,4 +286,4 @@ ML.private = {
 
 }
 const ml = new FitCurveToData('coef*x^3+coef*x^2+coef*x+coef', 'coef', [-0.8, -0.2, 0.9, 0.7, -0.5]);
-const doALearning = ml.doALearning.bind(ml);
+window.doALearning = ml.doALearning.bind(ml);
