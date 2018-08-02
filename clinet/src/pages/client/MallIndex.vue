@@ -1,10 +1,10 @@
 <template>
   <div class="MallIndex">
-    <FadeSwiper class="swiperBox" :width="clientWidth" height="420px">
+    <!-- <FadeSwiper class="swiperBox" :width="clientWidth" height="420px">
       <img class="banner" slot="item1" src="../../assets/img/banner1.jpg" />
       <img class="banner" slot="item2" src="../../assets/img/banner2.jpg" />
       <img class="banner" slot="item3" src="../../assets/img/banner3.jpg" />
-    </FadeSwiper>
+    </FadeSwiper> -->
     <section class="newGoods section">
       <SectionHeader title="新品首发" tips="周一周四上新，为你寻觅世间好物" moreText="更多新品>"/>
       <Slick

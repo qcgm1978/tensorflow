@@ -8,15 +8,17 @@
 
 <script>
 export default {
-  name: 'app'
-}
+  name: "app"
+};
 </script>
 
 <style scoped>
-.router-fade-enter-active, .router-fade-leave-active {
-    transition: opacity .3s;
+.router-fade-enter-active,
+.router-fade-leave-active {
+  transition: opacity 0.3s;
 }
-.router-fade-enter, .router-fade-leave-active {
-    opacity: 0;
+.router-fade-enter,
+.router-fade-leave-active {
+  opacity: 0;
 }
 </style>

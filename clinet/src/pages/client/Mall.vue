@@ -15,6 +15,8 @@
         </div>
       </div>
     </header>
+<!-- <div v-component="Ml"></div> -->
+<Ml />
     <div class="content" :style="{minHeight:clientHeight+'px'}">
       <div class="container">
         <router-view></router-view>
@@ -101,81 +103,84 @@
 </template>
 
 <script>
-import { mapState,mapMutations } from 'vuex';
-import NoticeList from '../../components/NoticeList';
-import {getClientSize,backToTop} from '../../util/util';
+import { mapState, mapMutations } from "vuex";
+import NoticeList from "../../components/NoticeList";
+import { getClientSize, backToTop } from "../../util/util";
+import Ml from "./Ml";
 
 export default {
-  name: 'Mall',
-  computed:{
-    ...mapState([
-      'clientToken',
-      'clientName'
-    ]),
+  name: "Mall",
+  computed: {
+    ...mapState(["clientToken", "clientName"])
   },
-  components:{
-    NoticeList
+  components: {
+    NoticeList,
+    Ml
   },
-  data () {
+  data() {
     return {
-      notices:['今日疯抢：牛皮防水男靴仅229元！直减2...','【福利】领1000元APP新人礼'],
-      clientHeight:getClientSize().height,
-      shouldShowBT:false
-    }
+      notices: [
+        "今日疯抢：牛皮防水男靴仅229元！直减2...",
+        "【福利】领1000元APP新人礼"
+      ],
+      clientHeight: getClientSize().height,
+      shouldShowBT: false
+    };
   },
 
-  methods:{
+  methods: {
     ...mapMutations({
-      clientLogout: 'CLIENT_LOGOUT',
+      clientLogout: "CLIENT_LOGOUT"
     }),
-    navTo(route){
-      this.$router.push(route)
+    navTo(route) {
+      this.$router.push(route);
     },
-    logout(){
+    logout() {
       this.clientLogout();
       this.$router.go(0);
     },
-    backToTop(){
+    backToTop() {
       backToTop();
     },
-    watchScrollTop(){
-      let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-      if(scrollTop>150){
+    watchScrollTop() {
+      let scrollTop =
+        document.documentElement.scrollTop || document.body.scrollTop;
+      if (scrollTop > 150) {
         this.shouldShowBT = true;
-      }else{
+      } else {
         this.shouldShowBT = false;
       }
     }
   },
 
-  mounted(){
-    document.addEventListener('scroll',this.watchScrollTop,false);
+  mounted() {
+    document.addEventListener("scroll", this.watchScrollTop, false);
   },
 
-  beforeDestroyed(){
-    document.removeEventListener('scroll',this.watchScrollTop,false);
+  beforeDestroyed() {
+    document.removeEventListener("scroll", this.watchScrollTop, false);
   }
-}
+};
 </script>
 
 <style scoped lang="less">
 @import "../../assets/css/var.less";
-.Mall{
+.Mall {
   width: 100%;
-  header{
+  header {
     width: 100%;
     background-color: #333333;
-    height:38px;
-    color:@fontShallowColor;
-    user-select:none;
+    height: 38px;
+    color: @fontShallowColor;
+    user-select: none;
     z-index: 10000;
     position: absolute;
     left: 0;
     top: 0;
-    .container{
+    .container {
       position: relative;
-      height:38px;
-      .title{
+      height: 38px;
+      .title {
         position: absolute;
         left: 0;
         display: inline-block;
@@ -186,11 +191,11 @@ export default {
         font-size: 14px;
         cursor: pointer;
       }
-      .NoticeListBox{
+      .NoticeListBox {
         position: absolute;
         left: 200px;
       }
-      .right{
+      .right {
         position: absolute;
         right: 0;
         display: inline-block;
@@ -199,72 +204,72 @@ export default {
         margin-top: -13px;
         line-height: 26px;
         font-size: 14px;
-        span{
+        span {
           margin-left: 20px;
           cursor: pointer;
         }
-        .name{
+        .name {
           cursor: default;
         }
       }
     }
   }
-  .content{
+  .content {
     padding-top: 40px;
   }
-  .fixedAd{
+  .fixedAd {
     position: fixed;
     right: 0;
     top: 108px;
     width: 72px;
-    img{
+    img {
       display: block;
       width: 100%;
       height: 154px;
     }
-    .fixedList{
+    .fixedList {
       margin-top: 2px;
       background-color: white;
       width: 100%;
-      li{
+      li {
         width: 100%;
         height: 80px;
         text-align: center;
         border-bottom: 1px solid @borderColor;
         cursor: pointer;
         padding-top: 12px;
-        i{
+        i {
           display: block;
           font-size: 30px;
-          color:#666666;
+          color: #666666;
         }
-        span{
+        span {
           display: block;
           font-size: 14px;
-          color:#666666;
+          color: #666666;
           margin-top: 4px;
         }
-        &:last-child{
+        &:last-child {
           border-bottom: none;
         }
-        &:hover{
-          i{
-            color:@thirdColor;
+        &:hover {
+          i {
+            color: @thirdColor;
           }
-          span{
-            color:@thirdColor;
+          span {
+            color: @thirdColor;
           }
         }
       }
     }
   }
-  .bottomInfo{
+  .bottomInfo {
     width: 100%;
     height: 300px;
     border-top: 1px solid @borderColor;
     overflow: hidden;
     margin-top: 80px;
-    .footerItem{
+    .footerItem {
       width: 33%;
       height: 210px;
       position: relative;
@@ -272,27 +277,27 @@ export default {
       display: inline-block;
       text-align: center;
       vertical-align: middle;
-      color:@fontDefaultColor;
-      .title{
+      color: @fontDefaultColor;
+      .title {
         color: @fontDeepColor;
         margin-bottom: 30px;
       }
     }
-    .service{
+    .service {
       border-right: 1px solid @borderColor;
-      span{
+      span {
         display: inline-block;
         width: 80px;
         height: 100px;
-        border:1px solid @borderColor;
+        border: 1px solid @borderColor;
         text-align: center;
         margin: 0 10px;
         font-size: 14px;
         cursor: pointer;
-        &:hover{
-          color:@thirdColor;
+        &:hover {
+          color: @thirdColor;
         }
-        i{
+        i {
           display: block;
           font-size: 30px;
           margin-top: 20px;
@@ -300,82 +305,82 @@ export default {
         }
       }
     }
-    .intro{
+    .intro {
       border-right: 1px solid @borderColor;
-      .intro-p{
+      .intro-p {
         font-size: 13px;
         width: 300px;
         margin: 0 auto;
         text-align: left;
-        color:@fontDeepColor;
+        color: @fontDeepColor;
         line-height: 1.8em;
       }
-      div{
+      div {
         text-align: left;
         font-size: 14px;
         margin-left: 47px;
         margin-top: 20px;
-        img{
+        img {
           margin: 0 6px;
           display: inline-block;
           vertical-align: middle;
         }
       }
     }
-    .code{
-      img{
+    .code {
+      img {
         display: block;
         margin: 0 auto;
       }
-      span{
+      span {
         font-size: 12px;
-        color:@thirdColor;
+        color: @thirdColor;
         margin-top: 10px;
         display: block;
       }
     }
   }
-  footer{
+  footer {
     width: 100%;
     height: 208px;
     background-color: #414141;
-    color:white;
+    color: white;
     overflow: hidden;
-    .footerTop{
+    .footerTop {
       padding: 36px 0;
       border-bottom: 1px solid #4f4f4f;
       width: 100%;
-      li{
+      li {
         display: inline-block;
         width: 33%;
         text-align: center;
-        img{
+        img {
           vertical-align: middle;
         }
-        span{
+        span {
           vertical-align: middle;
           font-size: 18px;
           margin-left: 10px;
         }
       }
     }
-    .footerBottom{
-      color:@fontDefaultColor;
+    .footerBottom {
+      color: @fontDefaultColor;
       margin-top: 30px;
       font-size: 13px;
       text-align: center;
-      ul{
-        li{
+      ul {
+        li {
           display: inline-block;
           cursor: pointer;
           padding: 0 6px;
           border-right: 2px solid @fontDefaultColor;
-          &:last-child{
-            border-right:none;
+          &:last-child {
+            border-right: none;
           }
         }
       }
-      p{
+      p {
         margin-top: 5px;
       }
     }
