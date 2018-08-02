@@ -33,7 +33,7 @@ export default class FitCurveToData extends ML {
                 watchLoops: this.getCloser
             },
             this.gengerateOptimizer,
-            { sixthStep: this.calMetricDerivatives },
+            { calMetricDerivatives: this.calMetricDerivatives },
             //             { sevenFeedData: super.tfTrain }
         ];
         return sevenSteps;
@@ -240,6 +240,7 @@ export default class FitCurveToData extends ML {
         return error;
     }
     calMetricDerivatives(xs, ys) {
+        debugger;
         this.learning = this.generateData(ML.private.NUM_POINTS, this.getArray(this.iniRandomArr));
         this.plot();
         // Learn! This is where the step happens, and when the training takes place.

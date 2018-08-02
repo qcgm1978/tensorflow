@@ -3,7 +3,6 @@
     [
       "env",
       {
-        "modules": false,
         "esmodules": false,
         "targets": {
           "browsers": [

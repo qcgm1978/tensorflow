@@ -35,7 +35,7 @@ export default class ML {
         if (sevenSteps.length < 6) {
             throw Error('Not Sevent ML methods')
         } else if (sevenSteps.length === 6) {
-            sevenSteps.push({ sevenFeedData: this.tfTrain })
+            sevenSteps.push({ sevenFeedData: this.sevenFeedData })
         }
         for (let item of sevenSteps) {
             if (item instanceof Function) {
@@ -87,7 +87,7 @@ export default class ML {
     tensor1d(values) {
         return tf.tensor1d(values);
     }
-    async tfTrain(xs, ys, numIterations) {
+    async sevenFeedData(xs, ys, numIterations) {
         for (let iter = 0; iter < numIterations; iter++) {
             // Plot where we are at this step.
             // const coeff = {
@@ -96,7 +96,7 @@ export default class ML {
             //     c: c.dataSync()[0],
             //     d: d.dataSync()[0],
             // };
-            this.sixthStep(xs, ys);
+            this.calMetricDerivatives(xs, ys);
 
             // Use tf.nextFrame to not block the browser.
             await tf.nextFrame();
