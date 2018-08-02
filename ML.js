@@ -10,11 +10,27 @@ export default class ML {
         this.formula = formula;
 
     }
+    getArray(arr) {
+        return arr.map(item => item.dataSync()[0])
+    }
+    iniRandom(len) {
+        const arr = []
+        for (let i = 0; i < len; i++) {
+            arr.push(tf.variable(tf.scalar(Math.random())));
+        }
+        return arr;
+    }
+    getRandomBetweenRange(points) {
+        return tf.randomUniform([points], -1, 1);
+    }
+    trainSgdByRate(learningRate) {
+        return tf.train.sgd(learningRate);
+    }
     /**
-     * Generate sevent methods that is defined or executed immediately
-     * @param  {array} sevenSteps seven ml step methods to define or execute
-     * @return {void}@memberof ML
-     */
+ * Generate sevent methods that is defined or executed immediately
+ * @param  {array} sevenSteps seven ml step methods to define or execute
+ * @return {void}@memberof ML
+ */
     generatePattern(sevenSteps) {
         if (sevenSteps.length < 6) {
             throw Error('Not Sevent ML methods')
@@ -29,6 +45,37 @@ export default class ML {
             }
         }
     }
+    tidy(arr, x) {
+        const str = this.formula;
+        return tf.tidy(() => {
+            // const result = arr[0]
+            //     .mul(x.pow(tf.scalar(3, 'int32')))
+            //     .add(arr[1].mul(x.square()))
+            //     .add(arr[2].mul(x))
+            //     .add(arr[3]);
+
+            // arr[0].mul(val.pow(tf.scalar(3, "int32"))).add(arr[1].mul(val.pow(tf.scalar(2, "int32")))).add(arr[2].mul(val.pow(tf.scalar(1, "int32")))).add(arr[3])
+
+            const result = this.getFeaturesMatrics(arr, x);
+            return result;
+        });
+    }
+    getFeaturesMatrics(arr, val) {
+        const strNoCoeff = arr.reduce((accumulator, item, index) => {
+            return accumulator.replace(this.toLearn, `arr[${index}]`);
+        }
+            , this.formula);
+        let formulaStr = ''
+        try {
+
+            formulaStr = strNoCoeff.replace(/\*x(\^(\d))?/g, (match, p1, p2) => {
+                return `.mul(val.pow(tf.scalar(${p2 ? p2 : 1},"int32")))`;
+            }).replace(/\+([^+]+)/g, '.add($1)');
+        } catch (e) {
+            debugger;
+        }
+        return eval(formulaStr);
+    }
     getFeaturesEval(arr, val) {
         const strNoCoeff = arr.reduce((accumulator, item) => {
             return accumulator.replace(this.toLearn, item);
@@ -37,7 +84,9 @@ export default class ML {
         const formulaStr = strNoCoeff.replace(/x/g, `(${val})`);
         return math.eval(formulaStr);
     }
-
+    tensor1d(values) {
+        return tf.tensor1d(values);
+    }
     async tfTrain(xs, ys, numIterations) {
         for (let iter = 0; iter < numIterations; iter++) {
             // Plot where we are at this step.

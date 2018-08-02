@@ -4,9 +4,9 @@
  */
 // import 'babel-polyfill';
 import './style.css'
-import * as tf from '@tensorflow/tfjs';
 import ML from './ML';
 import Plotly from 'plotly.js-geo-dist';
+import * as tf from '@tensorflow/tfjs';
 class FitCurveToData extends ML {
     /**
      * Implement ML ini, plot and learn
@@ -135,16 +135,8 @@ class FitCurveToData extends ML {
         }
         return arr;
     }
-    getArray(arr) {
-        return arr.map(item => item.dataSync()[0])
-    }
-    iniRandom(len) {
-        const arr = []
-        for (let i = 0; i < len; i++) {
-            arr.push(tf.variable(tf.scalar(Math.random())));
-        }
-        return arr;
-    }
+
+
     iniPredict() {
         this.iniRandomArr = this.iniRandom(this.def.length);
         this.iniCoeff = this.getArray(this.iniRandomArr);
@@ -158,7 +150,7 @@ class FitCurveToData extends ML {
         // 🚨 This is super important! TensorFlow requires this
         // for the algorithm to work, and if you don't do this
         // you learn NaN for every coefficient.
-        const xs = tf.randomUniform([points], -1, 1);
+        const xs = this.getRandomBetweenRange(points);
         // magic TF to give you points between [-1, 1]
         for (let i = 0; i < points; i++) {
             x[i] = xs.get(i);
@@ -191,6 +183,8 @@ class FitCurveToData extends ML {
     }
 
 
+
+
     async doALearning() {
         const that = this;
         // Create an optimizer. This is the thing that does the learning.
@@ -201,7 +195,7 @@ class FitCurveToData extends ML {
         const numIterations = parseInt(document.getElementById('iterations').value || 75);
 
         // Use the training data, and do numIteration passes over it. 
-        await this.sevenFeedData(tf.tensor1d(this.training.x), tf.tensor1d(this.training.y), numIterations);
+        await this.sevenFeedData(this.tensor1d(this.training.x), this.tensor1d(this.training.y), numIterations);
 
         // Once that is done, this has updated our coefficients! 
         // Here you could see what our predictions look like now, and use them!
@@ -217,21 +211,20 @@ class FitCurveToData extends ML {
 
     }
 
+
+
     /*
          * Predicts all the y values for all the x values.
          */
     predict(x) {
         const that = this;
+        const arr = that.iniRandomArr;
         // Calculate a y according to the formula
         // y = a * x ^ 3 + b * x ^ 2 + c * x + d
         // where a, b, c, d are the coefficients we have currently calculated.
-        return tf.tidy(() => {
-            const result = that.iniRandomArr[0].mul(x.pow(tf.scalar(3, 'int32'))).add(that.iniRandomArr[1].mul(x.square())).add(that.iniRandomArr[2].mul(x)).add(that.iniRandomArr[3]);
-            return result;
-        }
-        );
+        return this.tidy(arr, x)
     }
-
+    
     /*
          * Loss function: how good the prediction is based on what you expected.
          */
@@ -266,8 +259,10 @@ class FitCurveToData extends ML {
           - the full algorithm is here but it's...mathy: https://en.wikipedia.org/wiki/Stochastic_gradient_descent
           - this is why having tensorflow is good!!
         */
-        this.optimizer = tf.train.sgd(learningRate);
+        this.optimizer = this.trainSgdByRate(learningRate);
     }
+
+
 
     getCloser(xs, ys) {
         this.optimizer.minimize(() => {
