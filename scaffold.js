@@ -3,11 +3,10 @@
  * @class ML
  */
 // import 'babel-polyfill';
-import './style.css'
 import ML from './ML';
 import Plotly from 'plotly.js-geo-dist';
 import * as tf from '@tensorflow/tfjs';
-class FitCurveToData extends ML {
+export default class FitCurveToData extends ML {
     /**
      * Implement ML ini, plot and learn
      * @param  {string} formula the secret formula, parsed by math.js
@@ -278,13 +277,5 @@ class FitCurveToData extends ML {
 }
 ML.private = {
     NUM_POINTS: 100,
-
-}
-const ml = new FitCurveToData('coef*x^3+coef*x^2+coef*x+coef', 'coef', Array.from(document.querySelectorAll('#demo-content code input')).map(item => item.value));
-window.doALearning = ml.doALearning.bind(ml);
-
-window.init = () => {
-    const ml = new FitCurveToData('coef*x^3+coef*x^2+coef*x+coef', 'coef', Array.from(document.querySelectorAll('#demo-content code input')).map(item => item.value));
-    window.doALearning = ml.doALearning.bind(ml);
 
 }
