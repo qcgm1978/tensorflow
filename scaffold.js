@@ -224,7 +224,7 @@ class FitCurveToData extends ML {
         // where a, b, c, d are the coefficients we have currently calculated.
         return this.tidy(arr, x)
     }
-    
+
     /*
          * Loss function: how good the prediction is based on what you expected.
          */
@@ -280,5 +280,11 @@ ML.private = {
     NUM_POINTS: 100,
 
 }
-const ml = new FitCurveToData('coef*x^3+coef*x^2+coef*x+coef', 'coef', [-0.8, -0.2, 0.9, 0.7, -0.5]);
+const ml = new FitCurveToData('coef*x^3+coef*x^2+coef*x+coef', 'coef', Array.from(document.querySelectorAll('#demo-content code input')).map(item => item.value));
 window.doALearning = ml.doALearning.bind(ml);
+
+window.init = () => {
+    const ml = new FitCurveToData('coef*x^3+coef*x^2+coef*x+coef', 'coef', Array.from(document.querySelectorAll('#demo-content code input')).map(item => item.value));
+    window.doALearning = ml.doALearning.bind(ml);
+
+}
