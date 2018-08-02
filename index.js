@@ -3,8 +3,14 @@ import $ from "jquery";
 import FitCurveToData from './scaffold';
 window.$ = $;
 window.init = () => {
-    debugger;
-    const ml = new FitCurveToData(getFormula(), 'coef', Array.from(document.querySelectorAll('#demo-content code input')).map(item => item.value));
+    const obj = {
+        formula: getFormula(),
+        toLearn: 'coef',
+        def: Array.from(document.querySelectorAll('#demo-content code input')).map(item => item.value),
+        NUM_POINTS: parseInt($('#points').val()),
+        numIterations: parseInt(document.getElementById('iterations').value)
+    }
+    const ml = new FitCurveToData(obj);
     window.doALearning = ml.doALearning.bind(ml);
 
 }

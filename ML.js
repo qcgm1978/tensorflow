@@ -87,8 +87,8 @@ export default class ML {
     tensor1d(values) {
         return tf.tensor1d(values);
     }
-    async sevenFeedData(xs, ys, numIterations) {
-        for (let iter = 0; iter < numIterations; iter++) {
+    async sevenFeedData(xs, ys) {
+        for (let iter = 0; iter < this.numIterations; iter++) {
             // Plot where we are at this step.
             // const coeff = {
             //     a: a.dataSync()[0],

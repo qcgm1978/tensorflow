@@ -9,15 +9,19 @@ import * as tf from '@tensorflow/tfjs';
 export default class FitCurveToData extends ML {
     /**
      * Implement ML ini, plot and learn
-     * @param  {string} formula the secret formula, parsed by math.js
-     * @param  {string} toLearn the coefficients of the formula
-     * @param  {array} def initial data set
+     * @param {object} obj is an object
+     * @param  {string} obj.formula the secret formula, parsed by math.js
+     * @param  {string} obj.toLearn the coefficients of the formula
+     * @param  {array} obj.def initial data set
+     * @param {number} obj.numIterations How many passes through the data we're doing.
+     * @param {number} obj.NUM_POINTS Home many tf.Tensor generated between [-1, 1]
      * @memberof ML
      */
-    constructor(formula, toLearn, def = []) {
+    constructor({ formula, toLearn, def = [], NUM_POINTS = 100, numIterations = 75 }) {
         super(formula)
         this.toLearn = toLearn;
-
+        this.NUM_POINTS = NUM_POINTS;
+        this.numIterations = numIterations;
         var arr = this.getTolearnNum(formula, toLearn);
         this.def = this.getDef(arr, def);
         super.generatePattern(this.defineSevenTimeSeries())
@@ -59,7 +63,7 @@ export default class FitCurveToData extends ML {
     }
 
     generateTrainTarget() {
-        this.training = this.generateData(ML.private.NUM_POINTS, this.def)
+        this.training = this.generateData(this.def)
     }
     plot() {
         const trace1 = {
@@ -139,19 +143,19 @@ export default class FitCurveToData extends ML {
     iniPredict() {
         this.iniRandomArr = this.iniRandom(this.def.length);
         this.iniCoeff = this.getArray(this.iniRandomArr);
-        this.prediction = this.generateData(ML.private.NUM_POINTS, this.iniCoeff)
+        this.prediction = this.generateData(this.iniCoeff)
     }
-    generateData(points, arr) {
+    generateData(arr) {
         let x = [];
         let y = [];
-
+        const pointsLen = this.NUM_POINTS;
         // Normalize the x values to be between -1 and 1.
         // 🚨 This is super important! TensorFlow requires this
         // for the algorithm to work, and if you don't do this
         // you learn NaN for every coefficient.
-        const xs = this.getRandomBetweenRange(points);
-        // magic TF to give you points between [-1, 1]
-        for (let i = 0; i < points; i++) {
+        const xs = this.getRandomBetweenRange(pointsLen);
+        // magic TF to give you pointsLen between [-1, 1]
+        for (let i = 0; i < pointsLen; i++) {
             x[i] = xs.get(i);
             // goes from a TF tensor (i.e. array) to a number.
         }
@@ -160,7 +164,7 @@ export default class FitCurveToData extends ML {
         })
 
         // Generate the random y values.  
-        for (let i = 0; i < points; i++) {
+        for (let i = 0; i < pointsLen; i++) {
             const val = x[i];
             y[i] = this.figureOutFeatures(arr, val);
         }
@@ -170,7 +174,7 @@ export default class FitCurveToData extends ML {
         const ymax = Math.max(...y);
         const yrange = ymax - ymin;
 
-        for (let i = 0; i < points; i++) {
+        for (let i = 0; i < pointsLen; i++) {
             const val = y[i];
             y[i] = (y[i] - ymin) / yrange;
         }
@@ -190,11 +194,8 @@ export default class FitCurveToData extends ML {
         // 👉 you can play with these two numbers if you want to change the 
         // rate at which the algorithm is learning
 
-        // How many passes through the data we're doing.
-        const numIterations = parseInt(document.getElementById('iterations').value || 75);
-
         // Use the training data, and do numIteration passes over it. 
-        await this.sevenFeedData(this.tensor1d(this.training.x), this.tensor1d(this.training.y), numIterations);
+        await this.sevenFeedData(this.tensor1d(this.training.x), this.tensor1d(this.training.y));
 
         // Once that is done, this has updated our coefficients! 
         // Here you could see what our predictions look like now, and use them!
@@ -205,8 +206,7 @@ export default class FitCurveToData extends ML {
         //   c: c.dataSync()[0],
         //   d: d.dataSync()[0],
         // };
-        // this.prediction = generateData(NUM_POINTS, coeff);
-        // plot();
+
 
     }
 
@@ -240,8 +240,8 @@ export default class FitCurveToData extends ML {
         return error;
     }
     calMetricDerivatives(xs, ys) {
-        debugger;
-        this.learning = this.generateData(ML.private.NUM_POINTS, this.getArray(this.iniRandomArr));
+        // debugger;
+        this.learning = this.generateData(this.getArray(this.iniRandomArr));
         this.plot();
         // Learn! This is where the step happens, and when the training takes place.
         this.watchLoops(xs, ys);
@@ -275,8 +275,4 @@ export default class FitCurveToData extends ML {
         }
         );
     }
-}
-ML.private = {
-    NUM_POINTS: 100,
-
 }
