@@ -15,23 +15,7 @@
         </div>
       </div> -->
     </header>
-<Ml v-bind:formula-data1='[
-        {
-          degree: 3,
-          coef: -0.8
-        },
-        {
-          degree: 2,
-          coef: -0.2
-        },
-        {
-          degree: 1,
-          coef: 0.9
-        },
-        {
-          coef: 0.5
-        }
-      ]' v-bind:points1='100' v-bind:iterations1='75'/>
+<Ml />
    
   </div>
 </template>

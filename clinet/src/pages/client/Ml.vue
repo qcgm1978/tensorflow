@@ -155,6 +155,7 @@ export default {
         .catch(e => {
           console.log(e);
         });
+      return res;
     },
     navTo(route) {
       this.$router.push(route);
@@ -179,7 +180,12 @@ export default {
 
   mounted() {
     debugger;
-    this.getDefaultData();
+    this.getDefaultData().then(data => {
+      this.formulaData1 = data.result.degreeCoefs;
+      this.points1 = data.result.points;
+      this.interations1 = data.result.iterations;
+      debugger;
+    });
 
     // alert(typeof this.formulaData);
     FitCurveToData.init(
