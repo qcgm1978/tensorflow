@@ -61,10 +61,12 @@
         <div class="input-container formula">
             <b>Secret formula: </b>
             <code>
-        <input id="i_a" placeholder="-0.8" value="-0.8" onchange="init()" type="number">*x<sup>3</sup> + 
-        <input id="i_b" placeholder="-0.2" value="-0.2" onchange="init()" type="number">*x<sup>2</sup> + 
-        <input id="i_c" placeholder="0.9" value="0.9" onchange="init()" type="number">*x + 
-        <input id="i_d" placeholder="0.5" value="0.5" onchange="init()" type="number"> 
+<span v-for="item in formula" v-bind:key="item.coef"><input  v-bind:placeholder="item.coef" v-bind:value="item.coef" onchange="init()" type="number">{{item.degree?'*x':''}}<sup>{{item.degree}}</sup> 
+{{item.degree?'+':''}}
+</span>
+
+
+      
         </code>
         </div>
         <br>
@@ -136,7 +138,24 @@ export default {
   },
   data() {
     return {
-      curPath: this.$route.path
+      curPath: this.$route.path,
+      formula: [
+        {
+          degree: 3,
+          coef: -0.8
+        },
+        {
+          degree: 2,
+          coef: -0.2
+        },
+        {
+          degree: 1,
+          coef: 0.9
+        },
+        {
+          coef: 0.5
+        }
+      ]
     };
   },
 
