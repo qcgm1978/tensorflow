@@ -10,9 +10,12 @@ export default {
             NUM_POINTS: parseInt(points),
             numIterations: parseInt(document.getElementById('iterations').value)
         }
-        const ml = new FitCurveToData(obj);
-        window.doALearning = ml.doALearning.bind(ml);
+        this.ml = new FitCurveToData(obj);
 
+    },
+    doALearning: function () {
+        debugger;
+        this.ml.doALearning()
     },
     // window.init();
 

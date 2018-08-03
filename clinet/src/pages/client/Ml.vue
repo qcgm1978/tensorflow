@@ -61,7 +61,7 @@
         <div class="input-container formula">
             <b>Secret formula: </b>
             <code>
-<span v-for="item in formula" v-bind:key="item.degree"><input  v-bind:placeholder="item.coef" v-bind:value="item.coef" onchange="init()" type="number">{{item.degree?'*x':''}}<sup>{{item.degree}}</sup> 
+<span v-if='formula.length' v-for="item in formula" v-bind:key="item.degree"><input  v-bind:placeholder="item.coef" v-bind:value="item.coef" onchange="init()" type="number">{{item.degree?'*x':''}}<sup>{{item.degree}}</sup> 
 {{item.degree?'+':''}}
 </span>
 
@@ -78,7 +78,7 @@
             <label for="iterations">iterations</label>
             <input id="iterations" v-bind:placeholder="iterations" v-bind:value="iterations" type="number" onchange="init()">
         </div>
-        <button onclick="doALearning()">Learn!</button>
+        <button v-on:click="doALearning">Learn!</button>
         <button v-on:click="addPolyDegree">Add Degree of the polynomial</button>
     </div>
 
@@ -139,13 +139,14 @@ export default {
   data() {
     return {
       curPath: this.$route.path,
-      formula: this.formulaData1,
-      points: this.points1,
-      iterations: this.iterations1
+      formula: [],
+      points: 0,
+      iterations: 0
     };
   },
-  props: ["formulaData1", "points1", "iterations1"],
+  //   props: ["formulaData1", "points1", "iterations1"],
   methods: {
+    doALearning: FitCurveToData.doALearning.bind(FitCurveToData),
     getDefaultData() {
       const res = getDefaultData();
       res
@@ -166,14 +167,14 @@ export default {
     addPolyDegree(degree) {
       const toAddDegree = degree - 0 + 1;
       debugger;
-      this.formulaData1.unshift({
-        degree: this.formulaData1[0].degree + 1,
+      this.formula.unshift({
+        degree: this.formula[0].degree + 1,
         coef: -0.8
       });
       FitCurveToData.init(
-        Array.from(this.formulaData1).map(item => item.degree),
-        this.points1,
-        this.iterations1
+        Array.from(this.formula).map(item => item.degree),
+        this.points,
+        this.iterations
       );
     }
   },
@@ -181,18 +182,21 @@ export default {
   mounted() {
     debugger;
     this.getDefaultData().then(data => {
-      this.formulaData1 = data.result.degreeCoefs;
-      this.points1 = data.result.points;
-      this.interations1 = data.result.iterations;
+      this.formula = data.result.degreeCoefs;
+      this.points = data.result.points;
+      this.iterations = data.result.iterations;
       debugger;
+      console.log(this.formula);
+      this.$nextTick(() => {
+        FitCurveToData.init(
+          Array.from(this.formula).map(item => item.degree),
+          this.points,
+          this.iterations
+        );
+      });
     });
 
     // alert(typeof this.formulaData);
-    FitCurveToData.init(
-      Array.from(this.formulaData1).map(item => item.degree),
-      this.points1,
-      this.iterations1
-    );
   },
 
   watch: {
