@@ -10,6 +10,7 @@ const cors = require('koa2-cors');
 const mall = require('./routes/mall');
 const user = require('./routes/user');
 const admin = require('./routes/admin');
+const ml = require('./routes/ml');
 
 // error handler
 onerror(app);
@@ -46,6 +47,7 @@ app.use(jwt({
 app.use(mall.routes(), mall.allowedMethods());
 app.use(user.routes(), user.allowedMethods());
 app.use(admin.routes(), admin.allowedMethods());
+app.use(ml.routes(), ml.allowedMethods());
 
 // error-handling
 app.on('error', (err, ctx) => {

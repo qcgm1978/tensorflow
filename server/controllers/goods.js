@@ -79,8 +79,10 @@ exports.getGoodsByType = async (ctx) => {
 
 //得到商品详情页信息
 exports.getGoodsInfo = async (ctx) => {
+	console.log('bbbbbbbbb')
 	const id = ctx.query.id;
 	try {
+		// throw Error()
 		const goods = await GoodsModel.findOne({
 			attributes: ['id', 'name', 'img', 'desc', 'typeId'],
 			where: {

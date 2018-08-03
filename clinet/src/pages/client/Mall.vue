@@ -1,7 +1,7 @@
 <template>
   <div class="Mall">
     <header>
-      <div class="container clear">
+      <!-- <div class="container clear">
         <span class="title" @click="navTo('/mall')">MoreMall 一站式选购平台</span>
         <NoticeList :notices="notices"/>
         <div class="right" v-if="clientToken">
@@ -13,7 +13,7 @@
           <span @click="navTo('/login')">登录</span>
           <span @click="navTo('/login')">注册</span>
         </div>
-      </div>
+      </div> -->
     </header>
 <Ml v-bind:formula-data1='[
         {
@@ -54,8 +54,8 @@ export default {
   data() {
     return {
       notices: [
-        "今日疯抢：牛皮防水男靴仅229元！直减2...",
-        "【福利】领1000元APP新人礼"
+        // "今日疯抢：牛皮防水男靴仅229元！直减2...",
+        // "【福利】领1000元APP新人礼"
       ],
       clientHeight: getClientSize().height,
       shouldShowBT: false

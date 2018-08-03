@@ -1,6 +1,9 @@
 const router = require('koa-router')();
 const goods = require('../controllers/goods');
+// const ml = require('../controllers/ml');
 
+
+// router.get('/api/ml/getDefaultData', ml.getDefaultData);
 //得到不同类目的商品
 router.get('/api/mall/getGoodsByType', goods.getGoodsByType);
 

@@ -130,7 +130,7 @@
 <script>
 import { mapState } from "vuex";
 import FitCurveToData from "../../util/index";
-
+import { getDefaultData } from "../../api/ml";
 export default {
   name: "Ml",
   computed: {
@@ -146,6 +146,16 @@ export default {
   },
   props: ["formulaData1", "points1", "iterations1"],
   methods: {
+    getDefaultData() {
+      const res = getDefaultData();
+      res
+        .then(data => {
+          debugger;
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
     navTo(route) {
       this.$router.push(route);
     },
@@ -169,6 +179,8 @@ export default {
 
   mounted() {
     debugger;
+    this.getDefaultData();
+
     // alert(typeof this.formulaData);
     FitCurveToData.init(
       Array.from(this.formulaData1).map(item => item.degree),
