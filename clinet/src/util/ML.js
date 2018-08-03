@@ -4,6 +4,7 @@
  */
 // import 'babel-polyfill';
 import * as tf from '@tensorflow/tfjs';
+window.tf = tf;
 import * as math from 'mathjs'
 export default class ML {
     constructor(formula) {
@@ -100,8 +101,8 @@ export default class ML {
             //     c: c.dataSync()[0],
             //     d: d.dataSync()[0],
             // };
+            debugger;
             this.calMetricDerivatives(xs, ys);
-
             // Use tf.nextFrame to not block the browser.
             await tf.nextFrame();
         }

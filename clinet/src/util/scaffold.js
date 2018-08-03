@@ -262,13 +262,14 @@ export default class FitCurveToData extends ML {
 
 
     getCloser(xs, ys) {
+        const that = this;
         this.optimizer.minimize(() => {
             // Using our estimated coeff, predict all the ys for all the xs 
-            const pred = this.predict(xs);
+            const pred = that.predict(xs);
             // Need to return the loss i.e how bad is our prediction from the 
             // correct answer. The optimizer will then adjust the coefficients
             // to minimize this loss.
-            return this.loss(pred, ys);
+            return that.loss(pred, ys);
         }
         );
     }
