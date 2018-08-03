@@ -4,8 +4,7 @@
  */
 // import 'babel-polyfill';
 import ML from './ML';
-import Plotly from 'plotly.js-geo-dist';
-import * as tf from '@tensorflow/tfjs';
+// import * as tf from '@tensorflow/tfjs';
 export default class FitCurveToData extends ML {
     /**
      * Implement ML ini, plot and learn
@@ -116,10 +115,11 @@ export default class FitCurveToData extends ML {
                 orientation: "v"
             },
         };
-        Plotly.newPlot('graph', [trace1, trace2, trace3], layout, {
-            displayModeBar: false
-        });
+        const lines = [trace1, trace2, trace3];
+        this.plotly(lines, layout);
     }
+
+
     getTolearnNum(formula, toLearn) {
         const len = formula.length;
         const reg = new RegExp(toLearn, 'g')

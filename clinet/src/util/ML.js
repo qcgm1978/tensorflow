@@ -5,7 +5,8 @@
 // import 'babel-polyfill';
 import * as tf from '@tensorflow/tfjs';
 window.tf = tf;
-import * as math from 'mathjs'
+import * as math from 'mathjs';
+import Plotly from 'plotly.js-geo-dist';
 export default class ML {
     constructor(formula) {
         this.formula = formula;
@@ -14,6 +15,11 @@ export default class ML {
     /** * Returns a random number between min (inclusive) and max (exclusive) */
     static getRandomArbitrary(min, max) {
         return Math.random() * (max - min) + min;
+    }
+    plotly(lines, layout) {
+        Plotly.newPlot('graph', lines, layout, {
+            displayModeBar: false
+        });
     }
     getArray(arr) {
         return arr.map(item => item.dataSync()[0])
@@ -101,7 +107,7 @@ export default class ML {
             //     c: c.dataSync()[0],
             //     d: d.dataSync()[0],
             // };
-            debugger;
+            // debugger;
             this.calMetricDerivatives(xs, ys);
             // Use tf.nextFrame to not block the browser.
             await tf.nextFrame();

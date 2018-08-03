@@ -151,7 +151,7 @@ export default {
       const res = getDefaultData();
       res
         .then(data => {
-          debugger;
+          //   debugger;
         })
         .catch(e => {
           console.log(e);
@@ -166,7 +166,7 @@ export default {
     },
     addPolyDegree(degree) {
       const toAddDegree = degree - 0 + 1;
-      debugger;
+      //   debugger;
       this.formula.unshift({
         degree: this.formula[0].degree + 1,
         coef: -0.8
@@ -180,12 +180,12 @@ export default {
   },
 
   mounted() {
-    debugger;
+    // debugger;
     this.getDefaultData().then(data => {
       this.formula = data.result.degreeCoefs;
       this.points = data.result.points;
       this.iterations = data.result.iterations;
-      debugger;
+      //   debugger;
       console.log(this.formula);
       this.$nextTick(() => {
         FitCurveToData.init(
