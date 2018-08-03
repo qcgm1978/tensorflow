@@ -61,7 +61,7 @@
         <div class="input-container formula">
             <b>Secret formula: </b>
             <code>
-<span v-for="item in formula" v-bind:key="item.coef"><input  v-bind:placeholder="item.coef" v-bind:value="item.coef" onchange="init()" type="number">{{item.degree?'*x':''}}<sup>{{item.degree}}</sup> 
+<span v-for="item in formula" v-bind:key="item.degree"><input  v-bind:placeholder="item.coef" v-bind:value="item.coef" onchange="init()" type="number">{{item.degree?'*x':''}}<sup>{{item.degree}}</sup> 
 {{item.degree?'+':''}}
 </span>
 
@@ -154,13 +154,16 @@ export default {
     },
     addPolyDegree(degree) {
       const toAddDegree = degree - 0 + 1;
-      this.setData({
-        formula: this.formulaData.unshift({
-          degree: this.formulaData[0].degree++,
-          coef: -0.8
-        })
+      debugger;
+      this.formulaData1.unshift({
+        degree: this.formulaData1[0].degree + 1,
+        coef: -0.8
       });
-      this.init();
+      FitCurveToData.init(
+        Array.from(this.formulaData1).map(item => item.degree),
+        this.points1,
+        this.iterations1
+      );
     }
   },
 
