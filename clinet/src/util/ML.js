@@ -10,6 +10,10 @@ export default class ML {
         this.formula = formula;
 
     }
+    /** * Returns a random number between min (inclusive) and max (exclusive) */
+    static getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+    }
     getArray(arr) {
         return arr.map(item => item.dataSync()[0])
     }

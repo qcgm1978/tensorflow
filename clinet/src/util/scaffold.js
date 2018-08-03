@@ -57,10 +57,7 @@ export default class FitCurveToData extends ML {
         return arrIniCoffies;
     }
 
-    /** * Returns a random number between min (inclusive) and max (exclusive) */
-    static getRandomArbitrary(min, max) {
-        return Math.random() * (max - min) + min;
-    }
+
 
     generateTrainTarget() {
         this.training = this.generateData(this.def)

@@ -2,12 +2,12 @@
 // import $ from "jquery";
 import FitCurveToData from './scaffold';
 export default {
-    init() {
+    init(arr, points) {
         const obj = {
-            formula: this.getFormula(),
+            formula: this.getFormula(arr),
             toLearn: 'coef',
             def: Array.from(document.querySelectorAll('#demo-content code input')).map(item => item.value),
-            NUM_POINTS: parseInt($('#points').val()),
+            NUM_POINTS: parseInt(points),
             numIterations: parseInt(document.getElementById('iterations').value)
         }
         const ml = new FitCurveToData(obj);
@@ -16,20 +16,15 @@ export default {
     },
     // window.init();
 
-    addPolyDegree() {
-        const degree = $('#demo-content code sup:first').text();
-        const toAddDegree = degree - 0 + 1;
-        $('#demo-content code').prepend(`
-    <input id="i_${toAddDegree}" placeholder="-0.8" value="-0.8" onchange="init()" type="number">*x<sup>${toAddDegree}</sup>+
-    `);
-        this.init()
-    },
 
-    getFormula() {
+
+    getFormula(arr) {
         // return 'coef*x^3+coef*x^2+coef*x+coef';
-        const str = $('#demo-content code sup').toArray().reduce(((accumulator, item) => {
-            return accumulator + `coef*x^${$(item).text()}+`
+        debugger;
+        const str = arr.reduce(((accumulator, item) => {
+            const degree = item ? `*x^${item}+` : ''
+            return accumulator + `coef${degree}`
         }), '');
-        return str + `coef*x+coef`;
+        return str;
     }
 }

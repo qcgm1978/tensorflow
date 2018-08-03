@@ -72,14 +72,14 @@
         <br>
         <div class="input-container">
             <label for="points">initial points</label>
-            <input id="points" placeholder="100" value="100" type="number" onchange="init()">
+            <input id="points" v-bind:placeholder="points" v-bind:value="points" type="number" onchange="init()">
         </div>
         <div class="input-container">
             <label for="iterations">iterations</label>
-            <input id="iterations" placeholder="75" value="75" type="number" onchange="init()">
+            <input id="iterations" v-bind:placeholder="iterations" v-bind:value="iterations" type="number" onchange="init()">
         </div>
         <button onclick="doALearning()">Learn!</button>
-        <button onclick="addPolyDegree()">Add Degree of the polynomial</button>
+        <button v-on:click="addPolyDegree">Add Degree of the polynomial</button>
     </div>
 
     <div id="graph"></div>
@@ -139,34 +139,39 @@ export default {
   data() {
     return {
       curPath: this.$route.path,
-      formula: [
-        {
-          degree: 3,
-          coef: -0.8
-        },
-        {
-          degree: 2,
-          coef: -0.2
-        },
-        {
-          degree: 1,
-          coef: 0.9
-        },
-        {
-          coef: 0.5
-        }
-      ]
+      formula: this.formulaData1,
+      points: this.points1,
+      iterations: this.iterations1
     };
   },
-
+  props: ["formulaData1", "points1", "iterations1"],
   methods: {
     navTo(route) {
       this.$router.push(route);
+    },
+    addPolyDegree: () => {
+      FitCurveToData.addPolyDegree(this.formulaData[0].degree);
+    },
+    addPolyDegree(degree) {
+      const toAddDegree = degree - 0 + 1;
+      this.setData({
+        formula: this.formulaData.unshift({
+          degree: this.formulaData[0].degree++,
+          coef: -0.8
+        })
+      });
+      this.init();
     }
   },
 
   mounted() {
-    FitCurveToData.init();
+    debugger;
+    // alert(typeof this.formulaData);
+    FitCurveToData.init(
+      Array.from(this.formulaData1).map(item => item.degree),
+      this.points1,
+      this.iterations1
+    );
   },
 
   watch: {
