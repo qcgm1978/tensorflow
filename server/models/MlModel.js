@@ -22,7 +22,11 @@ const MlModel = sequelize.define('formula', {
 		defaultValue: 75,
 		allowNull: true
 	},
-
+	rate: {
+		type: Sequelize.FLOAT,
+		defaultValue: 0.5,
+		allowNull: false
+	}
 }, {
 		timestamps: false,
 	});

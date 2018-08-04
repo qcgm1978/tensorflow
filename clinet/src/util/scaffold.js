@@ -1,6 +1,7 @@
 /**
  * fit a curve to a bunch of data
- * @class ML
+ * @class FitCurveToData
+ * @memberOf ML
  */
 // import 'babel-polyfill';
 import ML from './ML';
@@ -11,18 +12,20 @@ export default class FitCurveToData extends ML {
      * @param {object} obj is an object
      * @param  {string} obj.formula the secret formula, parsed by math.js
      * @param  {string} obj.toLearn the coefficients of the formula
-     * @param  {array} obj.def initial data set
+     * @param {float} obj.rate  How fast we are learning.
+     * @param  {array} obj.coefs initial coef data set
      * @param {number} obj.numIterations How many passes through the data we're doing.
      * @param {number} obj.NUM_POINTS Home many tf.Tensor generated between [-1, 1]
      * @memberof ML
      */
-    constructor({ formula, toLearn, def = [], NUM_POINTS = 100, numIterations = 75 }) {
+    constructor({ formula, toLearn, rate, coefs = [], NUM_POINTS = 100, numIterations = 75 }) {
         super(formula)
         this.toLearn = toLearn;
+        this.rate = rate;
         this.NUM_POINTS = NUM_POINTS;
         this.numIterations = numIterations;
         var arr = this.getTolearnNum(formula, toLearn);
-        this.def = this.getDef(arr, def);
+        this.def = this.getDef(arr, coefs);
         super.generatePattern(this.defineSevenTimeSeries())
 
         this.plot()
@@ -33,7 +36,7 @@ export default class FitCurveToData extends ML {
             this.iniPredict,
             this.generateTrainTarget,
             {
-                watchLoops: this.getCloser
+                getCloser: this.getCloser
             },
             this.gengerateOptimizer,
             { calMetricDerivatives: this.calMetricDerivatives },
@@ -151,7 +154,6 @@ export default class FitCurveToData extends ML {
         // for the algorithm to work, and if you don't do this
         // you learn NaN for every coefficient.
         const xs = this.getRandomBetweenRange(pointsLen);
-        // magic TF to give you pointsLen between [-1, 1]
         for (let i = 0; i < pointsLen; i++) {
             x[i] = xs.get(i);
             // goes from a TF tensor (i.e. array) to a number.
@@ -187,10 +189,6 @@ export default class FitCurveToData extends ML {
 
     async doALearning() {
         const that = this;
-        // Create an optimizer. This is the thing that does the learning.
-        // 👉 you can play with these two numbers if you want to change the 
-        // rate at which the algorithm is learning
-
         // Use the training data, and do numIteration passes over it. 
         await this.sevenFeedData(this.tensor1d(this.training.x), this.tensor1d(this.training.y));
 
@@ -213,11 +211,8 @@ export default class FitCurveToData extends ML {
          * Predicts all the y values for all the x values.
          */
     predict(x) {
-        const that = this;
-        const arr = that.iniRandomArr;
+        const arr = this.iniRandomArr;
         // Calculate a y according to the formula
-        // y = a * x ^ 3 + b * x ^ 2 + c * x + d
-        // where a, b, c, d are the coefficients we have currently calculated.
         return this.tidy(arr, x)
     }
 
@@ -241,12 +236,10 @@ export default class FitCurveToData extends ML {
         this.learning = this.generateData(this.getArray(this.iniRandomArr));
         this.plot();
         // Learn! This is where the step happens, and when the training takes place.
-        this.watchLoops(xs, ys);
+        this.getCloser(xs, ys);
     }
 
     gengerateOptimizer() {
-        // How fast we are learning.
-        const learningRate = 0.5;
         /*
           Docs: https://js.tensorflow.org/api/0.11.1/#train.sgd
           - sgd means "stochastic gradient descent".
@@ -256,7 +249,7 @@ export default class FitCurveToData extends ML {
           - the full algorithm is here but it's...mathy: https://en.wikipedia.org/wiki/Stochastic_gradient_descent
           - this is why having tensorflow is good!!
         */
-        this.optimizer = this.trainSgdByRate(learningRate);
+        this.optimizer = super.trainSgdByRate();
     }
 
 
@@ -267,8 +260,7 @@ export default class FitCurveToData extends ML {
             // Using our estimated coeff, predict all the ys for all the xs 
             const pred = that.predict(xs);
             // Need to return the loss i.e how bad is our prediction from the 
-            // correct answer. The optimizer will then adjust the coefficients
-            // to minimize this loss.
+            // correct answer. The optimizer will then adjust the coefficients to minimize this loss.
             return that.loss(pred, ys);
         }
         );

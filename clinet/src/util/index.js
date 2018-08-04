@@ -2,28 +2,30 @@
 // import $ from "jquery";
 import FitCurveToData from './scaffold';
 export default {
-    init(arr, points) {
+    init({ arr, calcNum, coefs, iterations, rate }) {
         const obj = {
             formula: this.getFormula(arr),
             toLearn: 'coef',
-            def: Array.from(document.querySelectorAll('#demo-content code input')).map(item => item.value),
-            NUM_POINTS: parseInt(points),
-            numIterations: parseInt(document.getElementById('iterations').value)
+            coefs,
+            NUM_POINTS: calcNum,
+            numIterations: iterations,
+            rate
         }
         this.ml = new FitCurveToData(obj);
 
     },
     doALearning: function () {
-        debugger;
+        // debugger;
         this.ml.doALearning()
     },
-    // window.init();
-
+    getData() {
+        return this.ml.data;
+    },
 
 
     getFormula(arr) {
         // return 'coef*x^3+coef*x^2+coef*x+coef';
-        debugger;
+        // debugger;
         const str = arr.reduce(((accumulator, item) => {
             const degree = item ? `*x^${item}+` : ''
             return accumulator + `coef${degree}`

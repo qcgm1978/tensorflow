@@ -10,7 +10,7 @@ import Plotly from 'plotly.js-geo-dist';
 export default class ML {
     constructor(formula) {
         this.formula = formula;
-
+        this.data = []
     }
     /** * Returns a random number between min (inclusive) and max (exclusive) */
     static getRandomArbitrary(min, max) {
@@ -31,11 +31,29 @@ export default class ML {
         }
         return arr;
     }
-    getRandomBetweenRange(points) {
-        return tf.randomUniform([points], -1, 1);
+    // get data() {
+    //     return this.data;
+    // }
+    // set data(data) {
+    //     // this.data = data;
+    // }
+    /**
+     * magic TF to give you points between [-1, 1]
+     * @param  {int32} points 
+     * @return tf.Tensor length is len and range is [-1,1]
+     * @memberof ML
+     */
+    getRandomBetweenRange(len) {
+        return tf.randomUniform([len], -1, 1);
     }
-    trainSgdByRate(learningRate) {
-        return tf.train.sgd(learningRate);
+    /**
+     *  Create an optimizer. This is the thing that does the learning.
+     *  👉 you can play if you want to change the rate at which the algorithm is learning
+     * @return 
+     * @memberof ML
+     */
+    trainSgdByRate() {
+        return tf.train.sgd(this.rate);
     }
     /**
  * Generate sevent methods that is defined or executed immediately
@@ -100,15 +118,12 @@ export default class ML {
     }
     async sevenFeedData(xs, ys) {
         for (let iter = 0; iter < this.numIterations; iter++) {
-            // Plot where we are at this step.
-            // const coeff = {
-            //     a: a.dataSync()[0],
-            //     b: b.dataSync()[0],
-            //     c: c.dataSync()[0],
-            //     d: d.dataSync()[0],
-            // };
+
             // debugger;
             this.calMetricDerivatives(xs, ys);
+            if (iter === this.numIterations - 1) {
+                this.data.push({ xs, ys })
+            }
             // Use tf.nextFrame to not block the browser.
             await tf.nextFrame();
         }

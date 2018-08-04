@@ -8,7 +8,7 @@ exports.getDefaultData = async (ctx) => {
 	try {
 		console.log(id)
 		const ml = await MlModel.findOne({
-			attributes: ['degreeCoefs', 'points', 'iterations'],
+			attributes: ['degreeCoefs', 'points', 'iterations', 'rate'],
 			where: {
 				id
 			},

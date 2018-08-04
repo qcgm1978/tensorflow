@@ -61,7 +61,7 @@
         <div class="input-container formula">
             <b>Secret formula: </b>
             <code>
-<span v-if='formula.length' v-for="item in formula" v-bind:key="item.degree"><input  v-bind:placeholder="item.coef" v-bind:value="item.coef" onchange="init()" type="number">{{item.degree?'*x':''}}<sup>{{item.degree}}</sup> 
+<span v-if='formula.length' v-for="item in formula" v-bind:key="item.degree"><input  v-bind:placeholder="item.coef" v-bind:value="item.coef" v-bind:onchange="init" type="number">{{item.degree?'*x':''}}<sup>{{item.degree}}</sup> 
 {{item.degree?'+':''}}
 </span>
 
@@ -72,13 +72,16 @@
         <br>
         <div class="input-container">
             <label for="points">initial points</label>
-            <input id="points" v-bind:placeholder="points" v-bind:value="points" type="number" onchange="init()">
+            <input id="calcNum" v-bind:placeholder="calcNum" v-bind:value="calcNum" type="number" v-bind:onchange="init">
         </div>
         <div class="input-container">
             <label for="iterations">iterations</label>
-            <input id="iterations" v-bind:placeholder="iterations" v-bind:value="iterations" type="number" onchange="init()">
+            <input id="iterations" v-bind:placeholder="iterations" v-bind:value="iterations" type="number" v-bind:onchange="init">
         </div>
-        <button v-on:click="doALearning">Learn!</button>
+ <div class="input-container">
+            <label for="rate">rate</label>
+            <input id="rate" v-bind:placeholder="rate" v-bind:value="rate" type="number" v-bind:onchange="init">
+        </div>        <button v-on:click="doALearning">Learn!</button>
         <button v-on:click="addPolyDegree">Add Degree of the polynomial</button>
     </div>
 
@@ -140,24 +143,15 @@ export default {
     return {
       curPath: this.$route.path,
       formula: [],
-      points: 0,
-      iterations: 0
+      calcNum: 0,
+      iterations: 0,
+      rate: 0,
+      config: {}
     };
   },
-  //   props: ["formulaData1", "points1", "iterations1"],
   methods: {
     doALearning: FitCurveToData.doALearning.bind(FitCurveToData),
-    getDefaultData() {
-      const res = getDefaultData();
-      res
-        .then(data => {
-          //   debugger;
-        })
-        .catch(e => {
-          console.log(e);
-        });
-      return res;
-    },
+
     navTo(route) {
       this.$router.push(route);
     },
@@ -171,29 +165,35 @@ export default {
         degree: this.formula[0].degree + 1,
         coef: -0.8
       });
-      FitCurveToData.init(
-        Array.from(this.formula).map(item => item.degree),
-        this.points,
-        this.iterations
-      );
+      this.initLearningClass();
+    },
+    initLearningClass() {
+      this.$nextTick(() => {
+        FitCurveToData.init({
+          arr: this.formula.map(item => item.degree),
+          coefs: this.formula.map(item => item.coef),
+          calcNum: this.calcNum,
+          iterations: this.iterations,
+          rate: this.rate
+        });
+      });
+    },
+    init(evt) {
+      const val = evt.target.id;
+      this[val] = evt.target.value;
+      this.initLearningClass();
     }
   },
 
   mounted() {
     // debugger;
-    this.getDefaultData().then(data => {
+    getDefaultData().then(data => {
       this.formula = data.result.degreeCoefs;
-      this.points = data.result.points;
+      this.calcNum = data.result.points;
       this.iterations = data.result.iterations;
-      //   debugger;
+      this.rate = data.result.rate;
       console.log(this.formula);
-      this.$nextTick(() => {
-        FitCurveToData.init(
-          Array.from(this.formula).map(item => item.degree),
-          this.points,
-          this.iterations
-        );
-      });
+      this.initLearningClass();
     });
 
     // alert(typeof this.formulaData);
