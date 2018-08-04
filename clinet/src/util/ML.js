@@ -121,11 +121,12 @@ export default class ML {
 
             // debugger;
             this.calMetricDerivatives(xs, ys);
-            if (iter === this.numIterations - 1) {
-                this.data.push({ xs, ys })
-            }
+            // if (iter === this.numIterations - 1) {
+            //     this.data.push({ xs, ys })
+            // }
             // Use tf.nextFrame to not block the browser.
             await tf.nextFrame();
         }
+        return { xs: xs.dataSync(), ys: ys.dataSync() }
     }
 }

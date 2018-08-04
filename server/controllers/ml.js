@@ -7,7 +7,7 @@ exports.getDefaultData = async (ctx) => {
 	const id = ctx.query.id;
 	try {
 		console.log(id)
-		const ml = await MlModel.findOne({
+		const ml = await MlModel.MlModel.findOne({
 			attributes: ['degreeCoefs', 'points', 'iterations', 'rate'],
 			where: {
 				id
@@ -31,6 +31,27 @@ exports.getDefaultData = async (ctx) => {
 				result: ml
 			}
 		}
+	}
+	catch (e) {
+		ctx.body = {
+			code: 10000,
+			message: e.message
+		}
+	}
+}
+
+exports.saveData = async (ctx) => {
+	// console.log('aaaaaaaaa')
+	const data = ctx.query.data;
+	try {
+		const res = await MlModel.MlSaveModel.create({
+			data: ctx.request.body.data,
+		});
+		ctx.body = {
+			code: 0
+		}
+
+
 	}
 	catch (e) {
 		ctx.body = {

@@ -133,7 +133,7 @@
 <script>
 import { mapState } from "vuex";
 import FitCurveToData from "../../util/index";
-import { getDefaultData } from "../../api/ml";
+import { getDefaultData, saveData } from "../../api/ml";
 export default {
   name: "Ml",
   computed: {
@@ -150,8 +150,11 @@ export default {
     };
   },
   methods: {
-    doALearning: FitCurveToData.doALearning.bind(FitCurveToData),
-
+    async doALearning() {
+      const data = await FitCurveToData.doALearning();
+      debugger;
+      saveData({ data });
+    },
     navTo(route) {
       this.$router.push(route);
     },

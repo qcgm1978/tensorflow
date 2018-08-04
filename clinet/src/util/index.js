@@ -14,9 +14,9 @@ export default {
         this.ml = new FitCurveToData(obj);
 
     },
-    doALearning: function () {
-        // debugger;
-        this.ml.doALearning()
+    async doALearning() {
+        debugger;
+        return await this.ml.doALearning();
     },
     getData() {
         return this.ml.data;

@@ -31,4 +31,20 @@ const MlModel = sequelize.define('formula', {
 		timestamps: false,
 	});
 
-module.exports = MlModel;
+const MlSaveModel = sequelize.define('data', {
+	id: {
+		type: Sequelize.BIGINT,
+		primaryKey: true,
+		allowNull: false,
+		autoIncrement: true
+	},
+	data: {
+		type: Sequelize.JSON,
+		allowNull: false
+	},
+
+}, {
+		timestamps: false,
+	});
+
+module.exports = { MlModel, MlSaveModel };

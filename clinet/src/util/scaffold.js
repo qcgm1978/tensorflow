@@ -190,8 +190,8 @@ export default class FitCurveToData extends ML {
     async doALearning() {
         const that = this;
         // Use the training data, and do numIteration passes over it. 
-        await this.sevenFeedData(this.tensor1d(this.training.x), this.tensor1d(this.training.y));
-
+        return await this.sevenFeedData(this.tensor1d(this.training.x), this.tensor1d(this.training.y));
+        // return this.data;
         // Once that is done, this has updated our coefficients! 
         // Here you could see what our predictions look like now, and use them!
         // Example:
