@@ -61,7 +61,7 @@
         <div class="input-container formula">
             <b>Secret formula: </b>
             <code>
-<span v-if='formula.length' v-for="item in formula" v-bind:key="item.degree"><input  v-bind:placeholder="item.coef" v-bind:value="item.coef" v-bind:onchange="init" type="number">{{item.degree?'*x':''}}<sup>{{item.degree}}</sup> 
+<span v-if='formula.length' v-for="item in formula" v-bind:key="item.degree"><input  v-bind:placeholder="item.coef" v-bind:value="item.coef" v-on:change="init" type="number">{{item.degree?'*x':''}}<sup>{{item.degree}}</sup> 
 {{item.degree?'+':''}}
 </span>
 
@@ -72,15 +72,15 @@
         <br>
         <div class="input-container">
             <label for="points">initial points</label>
-            <input id="calcNum" v-bind:placeholder="calcNum" v-bind:value="calcNum" type="number" v-bind:onchange="init">
+            <input id="calcNum" v-bind:placeholder="calcNum" v-bind:value="calcNum" type="number" v-on:change="init">
         </div>
         <div class="input-container">
             <label for="iterations">iterations</label>
-            <input id="iterations" v-bind:placeholder="iterations" v-bind:value="iterations" type="number" v-bind:onchange="init">
+            <input id="iterations" v-bind:placeholder="iterations" v-bind:value="iterations" type="number" v-on:change="init">
         </div>
  <div class="input-container">
             <label for="rate">rate</label>
-            <input id="rate" v-bind:placeholder="rate" v-bind:value="rate" type="number" v-bind:onchange="init">
+            <input id="rate" v-bind:placeholder="rate" v-bind:value="rate" type="number" v-on:change="init">
         </div>        <button v-on:click="doALearning">Learn!</button>
         <button v-on:click="addPolyDegree">Add Degree of the polynomial</button>
     </div>
@@ -160,7 +160,6 @@ export default {
     },
     addPolyDegree(degree) {
       const toAddDegree = degree - 0 + 1;
-      //   debugger;
       this.formula.unshift({
         degree: this.formula[0].degree + 1,
         coef: -0.8
@@ -179,14 +178,14 @@ export default {
       });
     },
     init(evt) {
+      debugger;
       const val = evt.target.id;
-      this[val] = evt.target.value;
+      this[val] = parseInt(evt.target.value);
       this.initLearningClass();
     }
   },
 
   mounted() {
-    // debugger;
     getDefaultData().then(data => {
       this.formula = data.result.degreeCoefs;
       this.calcNum = data.result.points;
@@ -195,8 +194,6 @@ export default {
       console.log(this.formula);
       this.initLearningClass();
     });
-
-    // alert(typeof this.formulaData);
   },
 
   watch: {
