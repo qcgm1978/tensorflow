@@ -72,15 +72,15 @@
         <br>
         <div class="input-container">
             <label for="points">initial points</label>
-            <input id="calcNum" v-bind:placeholder="calcNum" v-bind:value="calcNum" type="number" v-on:change="init">
+            <input id="calcNum" v-bind:placeholder="defaultVal.calcNum" v-bind:value="calcNum" type="number" v-on:change="init">
         </div>
         <div class="input-container">
             <label for="iterations">iterations</label>
-            <input id="iterations" v-bind:placeholder="iterations" v-bind:value="iterations" type="number" v-on:change="init">
+            <input id="iterations" v-bind:placeholder="defaultVal.iterations" v-bind:value="iterations" type="number" v-on:change="init">
         </div>
  <div class="input-container">
             <label for="rate">rate</label>
-            <input id="rate" v-bind:placeholder="rate" v-bind:value="rate" type="number" v-on:change="init">
+            <input id="rate" v-bind:placeholder="defaultVal.rate" v-bind:value="rate" type="number" v-on:change="init">
         </div>        <button v-on:click="doALearning">Learn!</button>
         <button v-on:click="addPolyDegree">Add Degree of the polynomial</button>
     </div>
@@ -139,13 +139,19 @@ export default {
   computed: {
     ...mapState(["clientToken", "clientName"])
   },
+  //   defaultVal: {},
   data() {
-    return {
-      curPath: this.$route.path,
+    let defaultVal = {
       formula: [],
       calcNum: 0,
       iterations: 0,
-      rate: 0,
+      rate: 0
+    };
+    return {
+      ...defaultVal,
+      defaultVal,
+      curPath: this.$route.path,
+
       config: {}
     };
   },
@@ -191,7 +197,7 @@ export default {
     init(evt) {
       debugger;
       const val = evt.target.id;
-      this[val] = parseInt(evt.target.value);
+      this[val] = parseFloat(evt.target.value);
       this.initLearningClass();
     }
   },
