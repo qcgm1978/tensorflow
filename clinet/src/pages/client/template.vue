@@ -1,6 +1,36 @@
 <template>
   <div class="Ml">
-   
+    <header>
+        <h1>hello tensorflow
+            <div class="glitchButton"></div>
+        </h1>
+    </header>
+
+    <p>
+        <b>Machine Learning (ML) </b> is the dope new thing that everyone's talking about, because it's really good at learning
+        from data so that it can predict similar things in the future. Doing ML by hand is pretty annoying since it usually
+        involves matrix math which is zero fun in JavaScript (or if you ask me: anywhere 😅). Thankfully,
+        <b>
+            <a href="https://js.tensorflow.org/">TensorFlow.js</a>
+        </b> is here to help! It's an open source library that has a lot of built-in Machine Learning-y things like models and
+        algorithms so that you don't have to write them from scratch.
+    </p>
+
+    <h2>Is your problem a Machine Learning problem?</h2>
+    <p>Machine Learning is good at classifying and labelling data. The premise of every machine learning problem is:
+        <ul>
+            <li>Someone gives us some data that was generated according to a
+                <b>secret</b> formula. This data could be a bunch of points (that are generated based on some math equation),
+                but could also be fun, like images (the secret formula could be "some of these images are chihuahuas and
+                some are
+                <a href="https://mashable.com/2016/03/10/dog-or-muffin-meme/#LjBd4.e9lgqJ">
+                    blueberry muffins</a>") or bus schedules.</li>
+            <li>By looking at this data we were given, we approximate the secret formula so that we can correctly predict a future
+                data point. For example, if we're given a photo, we will eventually be able to confidently say whether it's
+                a dog or a muffin.</li>
+        </ul>
+    </p>
+
 
     <h2 id="demo">A fun demo!</h2>
     <p>
@@ -56,14 +86,12 @@
     </div>
 
     <div id="graph"></div>
-
     
-   
-   
   </div>
 </template>
 
 <script>
+import Bottom from "./template";
 import { mapState } from "vuex";
 import MlObj from "../../util/index";
 import { getDefaultData, saveData } from "../../api/ml";
@@ -83,10 +111,14 @@ export default {
     return {
       ...defaultVal,
       defaultVal,
+      legacySystemHTML: null,
       curPath: this.$route.path,
 
       config: {}
     };
+  },
+  created() {
+    this.legacySystemHTML = legacySystemHTML;
   },
   methods: {
     async doALearning() {

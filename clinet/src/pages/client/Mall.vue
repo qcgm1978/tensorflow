@@ -15,7 +15,7 @@
         </div>
       </div> -->
     </header>
-<Ml />
+<Page />
    
   </div>
 </template>
@@ -24,7 +24,7 @@
 import { mapState, mapMutations } from "vuex";
 import NoticeList from "../../components/NoticeList";
 import { getClientSize, backToTop } from "../../util/util";
-import Ml from "./Ml";
+import Page from "./Page";
 
 export default {
   name: "Mall",
@@ -33,7 +33,7 @@ export default {
   },
   components: {
     NoticeList,
-    Ml
+    Page
   },
   data() {
     return {
