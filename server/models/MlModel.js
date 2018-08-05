@@ -42,6 +42,22 @@ const MlSaveModel = sequelize.define('data', {
 		type: Sequelize.JSON,
 		allowNull: false
 	},
+	rate: {
+		type: Sequelize.FLOAT,
+		allowNull: false
+	},
+	iterations: {
+		type: Sequelize.INTEGER,
+		allowNull: false
+	},
+	periods: {
+		type: Sequelize.INTEGER,
+		allowNull: false
+	},
+	formula: {
+		type: Sequelize.STRING,
+		allowNull: false
+	}
 
 }, {
 		timestamps: false,

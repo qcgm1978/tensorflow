@@ -132,7 +132,7 @@
 
 <script>
 import { mapState } from "vuex";
-import FitCurveToData from "../../util/index";
+import MlObj from "../../util/index";
 import { getDefaultData, saveData } from "../../api/ml";
 export default {
   name: "Ml",
@@ -151,15 +151,23 @@ export default {
   },
   methods: {
     async doALearning() {
-      const data = await FitCurveToData.doALearning();
+      const data = await MlObj.doALearning();
       debugger;
-      saveData({ data });
+      saveData({
+        data: {
+          data,
+          formula: MlObj._formula,
+          rate: this.rate,
+          periods: this.calcNum,
+          iterations: this.iterations
+        }
+      });
     },
     navTo(route) {
       this.$router.push(route);
     },
     addPolyDegree: () => {
-      FitCurveToData.addPolyDegree(this.formulaData[0].degree);
+      MlObj.addPolyDegree(this.formulaData[0].degree);
     },
     addPolyDegree(degree) {
       const toAddDegree = degree - 0 + 1;
@@ -171,7 +179,7 @@ export default {
     },
     initLearningClass() {
       this.$nextTick(() => {
-        FitCurveToData.init({
+        MlObj.init({
           arr: this.formula.map(item => item.degree),
           coefs: this.formula.map(item => item.coef),
           calcNum: this.calcNum,

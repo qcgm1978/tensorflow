@@ -3,8 +3,9 @@
 import FitCurveToData from './scaffold';
 export default {
     init({ arr, calcNum, coefs, iterations, rate }) {
+        this.formula = arr
         const obj = {
-            formula: this.getFormula(arr),
+            formula: this._formula,
             toLearn: 'coef',
             coefs,
             NUM_POINTS: calcNum,
@@ -21,8 +22,12 @@ export default {
     getData() {
         return this.ml.data;
     },
-
-
+    // get formula() {
+    //     return this.formula;
+    // },
+    set formula(arr) {
+        this._formula = this.getFormula(arr)
+    },
     getFormula(arr) {
         // return 'coef*x^3+coef*x^2+coef*x+coef';
         // debugger;
