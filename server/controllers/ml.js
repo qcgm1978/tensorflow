@@ -1,16 +1,16 @@
 
-const MlModel = require('../models/MlModel.js');
-
-// get default formula data
-exports.getDefaultData = async (ctx) => {
+const MlDataModel = require('../models/MlModel.js');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+exports.getMlData = async (ctx) => {
 	// console.log('aaaaaaaaa')
 	const id = ctx.query.id;
 	try {
 		console.log(id)
-		const ml = await MlModel.MlModel.findOne({
-			attributes: ['degreeCoefs', 'points', 'iterations', 'rate'],
+		const ml = await MlDataModel.MlDataModel.findAll({
+			attributes: ['id', 'rate', 'periods', 'iterations', 'formula', 'data'],
 			where: {
-				id
+				formula: { [Op.like]: '%coef' }
 			},
 		});
 		if (!ml) {
@@ -40,12 +40,49 @@ exports.getDefaultData = async (ctx) => {
 	}
 }
 
+// get default formula data
+exports.getDefaultData = async (ctx) => {
+	// console.log('aaaaaaaaa')
+	const id = ctx.query.id;
+	try {
+		console.log(id)
+		const ml = await MlDataModel.MlDataModel.findOne({
+			attributes: ['degreeCoefs', 'points', 'iterations', 'rate'],
+			where: {
+				id
+			},
+		});
+		if (!ml) {
+			ctx.body = {
+				code: 404,
+				data: {
+					result: 'no ini data'
+				}
+			};
+			return;
+		}
+
+
+
+		ctx.body = {
+			code: 0,
+			data: ml.result
+		}
+	}
+	catch (e) {
+		ctx.body = {
+			code: 10000,
+			message: e.message
+		}
+	}
+}
+
 exports.saveData = async (ctx) => {
 	try {
 		const data = ctx.request.body.data;
 		const compareData = { ...data };
 		delete compareData.data;
-		const exsitedData = await MlModel.MlSaveModel.findOrCreate({
+		const exsitedData = await MlDataModel.MlSaveModel.findOrCreate({
 			where: compareData,
 			// attributes: { exclude: ['data'] },
 			defaults: data
@@ -80,7 +117,7 @@ exports.saveData = async (ctx) => {
 
 		// const data = ctx.request.body.data;
 		// console.log(data)
-		// const res = await MlModel.MlSaveModel.create({
+		// const res = await MlDataModel.MlSaveModel.create({
 		// 	data: data.data,
 		// 	rate: data.rate,
 		// 	iterations: data.iterations,

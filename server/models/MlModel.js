@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../config/sequelizeBase-ml');
 
-const MlModel = sequelize.define('formula', {
+exports.MlModel = sequelize.define('formula', {
 	id: {
 		type: Sequelize.BIGINT,
 		primaryKey: true,
@@ -31,7 +31,7 @@ const MlModel = sequelize.define('formula', {
 		timestamps: false,
 	});
 
-const MlSaveModel = sequelize.define('data', {
+exports.MlDataModel = sequelize.define('data', {
 	id: {
 		type: Sequelize.BIGINT,
 		primaryKey: true,
@@ -62,5 +62,3 @@ const MlSaveModel = sequelize.define('data', {
 }, {
 		timestamps: false,
 	});
-
-module.exports = { MlModel, MlSaveModel };

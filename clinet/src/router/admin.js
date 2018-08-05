@@ -3,32 +3,33 @@ import Router from 'vue-router'
 
 import store from '@/store';
 
-import AdminLogin from '@/pages/admin/AdminLogin' 
+import AdminLogin from '@/pages/admin/AdminLogin'
 import Backstage from '@/pages/admin/Backstage'
-import EditUser from '@/pages/admin/EditUser' 
+import EditUser from '@/pages/admin/EditUser'
 import EditAdmin from '@/pages/admin/EditAdmin'
-import Goods from '@/pages/admin/Goods' 
-import Orders from '@/pages/admin/Orders' 
+import Goods from '@/pages/admin/Goods'
+import Orders from '@/pages/admin/Orders'
+import Ml from '@/pages/admin/Ml'
 import EditOrders from '@/pages/admin/EditOrders'
 import EditGoods from '@/pages/admin/EditGoods'
-import Messages from '@/pages/admin/Messages' 
-import ErrorPage from '@/pages/ErrorPage' 
+import Messages from '@/pages/admin/Messages'
+import ErrorPage from '@/pages/ErrorPage'
 
 Vue.use(Router)
 
 let router = new Router({
   routes: [
     {
-      path:"/",
-      redirect:"/login"
-    },{
+      path: "/",
+      redirect: "/login"
+    }, {
       path: '/login',
       name: 'AdminLogin',
       component: AdminLogin
-    },{
+    }, {
       path: '/backstage',
       name: 'Backstage',
-      redirect:"/backstage/editUser",
+      redirect: "/backstage/editUser",
       component: Backstage,
       children: [
         {
@@ -36,59 +37,66 @@ let router = new Router({
           name: 'EditUser',
           component: EditUser,
           meta: {
-            requireLogin:true,
+            requireLogin: true,
           },
-        },{
+        }, {
           path: 'editAdmin',
           name: 'EditAdmin',
           component: EditAdmin,
           meta: {
-            requireLogin:true,
+            requireLogin: true,
           },
-        },{
+        }, {
           path: 'goods',
           name: 'Goods',
           component: Goods,
           meta: {
-            requireLogin:true,
+            requireLogin: true,
           },
-        },{
+        }, {
           path: 'goods/:id',
           name: 'EditGoods',
           component: EditGoods,
           meta: {
-            requireLogin:true,
+            requireLogin: true,
           },
-        },{
+        }, {
           path: 'orders',
           name: 'Orders',
           component: Orders,
           meta: {
-            requireLogin:true,
+            requireLogin: true,
           },
-        },{
+        }, {
+          path: 'Ml',
+          name: 'Ml',
+          component: Ml,
+          meta: {
+            requireLogin: true,
+          },
+        }, {
           path: 'orders/:id',
           name: 'EditOrders',
           component: EditOrders,
           meta: {
-            requireLogin:true,
+            requireLogin: true,
           },
-        },{
+        }, {
           path: 'messages',
           name: 'Messages',
           component: Messages,
           meta: {
-            requireLogin:true,
+            requireLogin: true,
           },
         }
       ]
-    },{//404页面
-    	path:'*',
-    	name:'ErrorPage',
-    	component: ErrorPage
+    }, {//404页面
+      path: '*',
+      name: 'ErrorPage',
+      component: ErrorPage
     }
   ],
-  scrollBehavior (to, from, savedPosition) {
+  scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition
     } else {
@@ -98,17 +106,17 @@ let router = new Router({
 });
 
 //登录拦截
-router.beforeEach((to,from,next) => {
-  if(to.meta.requireLogin){
-    if(store.state.adminToken){
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireLogin) {
+    if (store.state.adminToken) {
       next()
-    }else{
+    } else {
       next({
         path: '/login',
-        query:{redirect: to.fullPath}
+        query: { redirect: to.fullPath }
       })
     }
-  }else{
+  } else {
     next();
   }
 });

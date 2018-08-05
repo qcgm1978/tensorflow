@@ -8,6 +8,7 @@
         <li @click="navTo('/backstage/orders')" :class="{selected:curPath==='/backstage/orders'}">订单管理</li>
         <li @click="navTo('/backstage/messages')" :class="{selected:curPath==='/backstage/messages'}">留言管理</li>
         <li @click="navTo('/backstage/editAdmin')" :class="{selected:curPath==='/backstage/editAdmin'}">修改资料</li>
+        <li @click="navTo('/backstage/Ml')" :class="{selected:curPath==='/backstage/Ml'}">ML</li>
       </ul>
     </div><div class="bsRight">
       <div class="header">
@@ -29,124 +30,121 @@
 </template>
 
 <script>
-import { mapState,mapMutations } from 'vuex';
-import {getClientSize} from '../../util/util';
+import { mapState, mapMutations } from "vuex";
+import { getClientSize } from "../../util/util";
 export default {
-  name: 'Backstage',
-  data(){
-    return{
-      userTipsShow:false,
-      curPath:this.$route.path
-    }
+  name: "Backstage",
+  data() {
+    return {
+      userTipsShow: false,
+      curPath: this.$route.path
+    };
   },
-  computed:{
-    ...mapState([
-      'adminName'
-    ]),
-    width(){
+  computed: {
+    ...mapState(["adminName"]),
+    width() {
       return getClientSize().width;
     },
-    height(){
+    height() {
       return getClientSize().height;
-    },
+    }
   },
-  methods:{
+  methods: {
     ...mapMutations({
-      adminLogout: 'ADMIN_LOGOUT',
+      adminLogout: "ADMIN_LOGOUT"
     }),
-    showUserTips(){
+    showUserTips() {
       this.userTipsShow = true;
     },
-    closeUserTips(){
+    closeUserTips() {
       this.userTipsShow = false;
     },
-    navTo(route){
-      if(this.curPath===route){
+    navTo(route) {
+      if (this.curPath === route) {
         return;
       }
-      this.$router.push(route)
+      this.$router.push(route);
     },
-    logout(){
+    logout() {
       this.adminLogout();
-      this.$router.push('/login');
+      this.$router.push("/login");
     }
   },
-  watch:{
-    '$route'(to,from){
-        this.curPath = to.path;
+  watch: {
+    $route(to, from) {
+      this.curPath = to.path;
     }
   }
-}
+};
 </script>
 
 <style scoped lang="less">
 @import "../../assets/css/var.less";
-.Backstage{
+.Backstage {
   overflow: hidden;
-  .bsLeft{
+  .bsLeft {
     width: 15%;
     height: 100%;
     display: inline-block;
     overflow: hidden;
-    user-select:none;
-    .logo{
+    user-select: none;
+    .logo {
       width: 100%;
       height: 70px;
       background-color: @mainColor;
-      color:white;
+      color: white;
       font-size: 25px;
       overflow: hidden;
       text-align: center;
       line-height: 70px;
     }
-    ul{
+    ul {
       width: 100%;
       background-color: #313541;
-      li{
+      li {
         width: 100%;
-        color:@fontDefaultColor;
+        color: @fontDefaultColor;
         height: 45px;
         line-height: 45px;
         cursor: pointer;
         padding: 0 20px;
       }
-      .selected{
+      .selected {
         background-color: #272a34;
-        color:white;
+        color: white;
       }
     }
   }
-  .bsRight{
+  .bsRight {
     width: 85%;
     height: 100%;
     display: inline-block;
     overflow: hidden;
-    .header{
+    .header {
       width: 100%;
       height: 70px;
       line-height: 70px;
       border-bottom: 1px solid @borderColor;
       font-size: 18px;
       position: relative;
-      user-select:none;
-      .title{
+      user-select: none;
+      .title {
         font-size: 23px;
         position: absolute;
         left: 10px;
         vertical-align: middle;
-        color:@fontDefaultColor;
+        color: @fontDefaultColor;
       }
-      .userInfo{
+      .userInfo {
         position: absolute;
         right: 10px;
         font-size: 14px;
-        i{
-
+        i {
         }
-        span{
+        span {
           cursor: pointer;
         }
-        .userTips{
+        .userTips {
           position: absolute;
           top: 45px;
           right: 0;
@@ -154,7 +152,7 @@ export default {
           cursor: pointer;
           border: 1px solid @borderColor;
           background-color: white;
-          li{
+          li {
             width: 100%;
             height: 30px;
             text-align: center;
@@ -164,6 +162,6 @@ export default {
         }
       }
     }
-  } 
+  }
 }
 </style>
