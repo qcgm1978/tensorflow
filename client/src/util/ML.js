@@ -7,7 +7,8 @@ import * as tf from '@tensorflow/tfjs';
 window.tf = tf;
 import * as math from 'mathjs';
 import Plotly from 'plotly.js-geo-dist';
-export default class ML {
+export { tf }
+export class ML {
     constructor(formula) {
         this.formula = formula;
         this.data = []

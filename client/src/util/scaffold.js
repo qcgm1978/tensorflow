@@ -4,7 +4,7 @@
  * @memberOf ML
  */
 // import 'babel-polyfill';
-import ML from './ML';
+import { ML } from './ML';
 // import * as tf from '@tensorflow/tfjs';
 export default class FitCurveToData extends ML {
     /**

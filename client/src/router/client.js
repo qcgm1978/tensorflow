@@ -16,6 +16,7 @@ import Cart from '@/pages/client/Cart';
 import ErrorPage from '@/pages/ErrorPage';
 
 import Page from '@/pages/client/Page'
+import Start from '@/pages/client/Start'
 Vue.use(Router);
 
 let router = new Router({
@@ -30,7 +31,11 @@ let router = new Router({
     }, {
       path: '/page',
       name: 'Page',
-      component: Page
+      component: Page,
+    }, {
+      path: '/start',
+      name: 'start',
+      component: Start
     }, {
       path: '/mall',
       name: 'Mall',
