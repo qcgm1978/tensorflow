@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../config/sequelizeBase-ml');
 
-exports.MlModel = sequelize.define('formula', {
+exports.MlConfigModel = sequelize.define('formula', {
 	id: {
 		type: Sequelize.BIGINT,
 		primaryKey: true,

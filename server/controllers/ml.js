@@ -1,5 +1,5 @@
 
-const MlDataModel = require('../models/MlModel.js');
+const MlModel = require('../models/MlModel');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 exports.getMlData = async (ctx) => {
@@ -7,7 +7,7 @@ exports.getMlData = async (ctx) => {
 	const id = ctx.query.id;
 	try {
 		console.log(id)
-		const ml = await MlDataModel.MlDataModel.findAll({
+		const ml = await MlModel.MlDataModel.findAll({
 			attributes: ['id', 'rate', 'periods', 'iterations', 'formula', 'data'],
 			where: {
 				formula: { [Op.like]: '%coef' }
@@ -46,7 +46,7 @@ exports.getDefaultData = async (ctx) => {
 	const id = ctx.query.id;
 	try {
 		console.log(id)
-		const ml = await MlDataModel.MlDataModel.findOne({
+		const ml = await MlModel.MlConfigModel.findOne({
 			attributes: ['degreeCoefs', 'points', 'iterations', 'rate'],
 			where: {
 				id
@@ -66,7 +66,7 @@ exports.getDefaultData = async (ctx) => {
 
 		ctx.body = {
 			code: 0,
-			data: ml.result
+			data: ml
 		}
 	}
 	catch (e) {
@@ -82,7 +82,7 @@ exports.saveData = async (ctx) => {
 		const data = ctx.request.body.data;
 		const compareData = { ...data };
 		delete compareData.data;
-		const exsitedData = await MlDataModel.MlSaveModel.findOrCreate({
+		const exsitedData = await MlModel.MlDataModel.findOrCreate({
 			where: compareData,
 			// attributes: { exclude: ['data'] },
 			defaults: data

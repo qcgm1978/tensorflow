@@ -13,9 +13,7 @@
 	            <tr v-for="(item,index) in mlList" :key="'order'+item.id">
 	            	<td>{{item.id}}</td>
 	            	<td style="
-    height: 50px;
-    overflow: hidden;
-    display: table-caption;
+   max-height: 60px;overflow: hidden;display: block;
 ">{{item.data}}</td>
 	            	<td>{{item.rate}}</td>
 	            	<td>{{item.iterations}}</td>
@@ -23,7 +21,7 @@
 	            	<td style="
     word-break: break-all;
 ">{{item.formula}}</td>
-	                <td><button class="normal" @click="editOrder(item.id)">编辑</button><button class="delete" @click="deleteOrder(item.id)">删除</button></td>
+	                <!-- <td><button class="normal" @click="editOrder(item.id)">编辑</button><button class="delete" @click="deleteOrder(item.id)">删除</button></td> -->
 	            </tr>
 	        </tbody>
 	    </table>

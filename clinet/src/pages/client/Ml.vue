@@ -137,10 +137,10 @@ export default {
 
   mounted() {
     getDefaultData().then(data => {
-      this.formula = data.result.degreeCoefs;
-      this.calcNum = data.result.points;
-      this.iterations = data.result.iterations;
-      this.rate = data.result.rate;
+      this.formula = data.degreeCoefs;
+      this.calcNum = data.points;
+      this.iterations = data.iterations;
+      this.rate = data.rate;
       console.log(this.formula);
       this.initLearningClass();
     });
