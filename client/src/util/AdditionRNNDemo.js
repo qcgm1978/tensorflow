@@ -1,7 +1,9 @@
 import embed from 'vega-embed';
 import CharacterTable from "./CharacterTable";
-export default class AdditionRNNDemo {
+import { ML } from './ML';
+export default class AdditionRNNDemo extends ML {
     constructor(digits, trainingSize, rnnType, layers, hiddenSize) {
+        super()
         // Prepare training data.
         const chars = '0123456789+ ';
         this.charTable = new CharacterTable(chars);

@@ -40,51 +40,9 @@ let router = new Router({
             requireLogin: true,
           },
         }, {
-          path: 'editAdmin',
-          name: 'EditAdmin',
-          component: EditAdmin,
-          meta: {
-            requireLogin: true,
-          },
-        }, {
-          path: 'goods',
-          name: 'Goods',
-          component: Goods,
-          meta: {
-            requireLogin: true,
-          },
-        }, {
-          path: 'goods/:id',
-          name: 'EditGoods',
-          component: EditGoods,
-          meta: {
-            requireLogin: true,
-          },
-        }, {
-          path: 'orders',
-          name: 'Orders',
-          component: Orders,
-          meta: {
-            requireLogin: true,
-          },
-        }, {
           path: 'Ml',
           name: 'Ml',
           component: Ml,
-          meta: {
-            requireLogin: true,
-          },
-        }, {
-          path: 'orders/:id',
-          name: 'EditOrders',
-          component: EditOrders,
-          meta: {
-            requireLogin: true,
-          },
-        }, {
-          path: 'messages',
-          name: 'Messages',
-          component: Messages,
           meta: {
             requireLogin: true,
           },
