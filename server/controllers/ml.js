@@ -77,6 +77,41 @@ exports.getDefaultData = async (ctx) => {
 	}
 }
 
+exports.getRNNDefaultData = async (ctx) => {
+	const id = ctx.query.id;
+	try {
+		console.log(id)
+		const ml = await MlModel.MlConfigRNNModel.findOne({
+			attributes: ['digits', 'trainingSize', 'type', 'layers', 'layerSize', 'batchSize', 'iterations', 'examples'],
+			where: {
+				id
+			},
+		});
+		if (!ml) {
+			ctx.body = {
+				code: 404,
+				data: {
+					result: 'no ini data'
+				}
+			};
+			return;
+		}
+
+
+
+		ctx.body = {
+			code: 0,
+			data: ml
+		}
+	}
+	catch (e) {
+		ctx.body = {
+			code: 10000,
+			message: e.message
+		}
+	}
+}
+
 exports.saveData = async (ctx) => {
 	try {
 		const data = ctx.request.body.data;

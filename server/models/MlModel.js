@@ -31,6 +31,51 @@ exports.MlConfigModel = sequelize.define('formula', {
 		timestamps: false,
 	});
 
+exports.MlConfigRNNModel = sequelize.define('rnn', {
+	id: {
+		type: Sequelize.BIGINT,
+		primaryKey: true,
+		allowNull: false,
+		autoIncrement: true
+	},
+	digits: {
+		type: Sequelize.BIGINT,
+		allowNull: false
+	},
+	trainingSize: {
+		type: Sequelize.BIGINT,
+		defaultValue: 5000,
+		allowNull: false
+	},
+	iterations: {
+		type: Sequelize.INTEGER,
+		defaultValue: 100,
+		allowNull: false
+	},
+	type: {
+		type: Sequelize.STRING,
+		defaultValue: 'SimpleRNN',
+		allowNull: false
+	},
+	layers: {
+		type: Sequelize.INTEGER
+	},
+	layerSize: {
+		type: Sequelize.INTEGER
+	},
+	batchSize: {
+		type: Sequelize.INTEGER
+
+	},
+
+	examples: {
+		type: Sequelize.INTEGER
+
+	}
+}, {
+		timestamps: false,
+	});
+
 exports.MlDataModel = sequelize.define('data', {
 	id: {
 		type: Sequelize.BIGINT,

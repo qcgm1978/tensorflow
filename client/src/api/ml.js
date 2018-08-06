@@ -22,8 +22,8 @@ function getMlData() {
 			})
 	})
 }
-function getDefaultData() {
-	const res = axios.get('/api/ml/getDefaultData?id=1');
+function getDefaultData(url) {
+	const res = axios.get(url);
 	return new Promise((resolve, reject) => {
 		res
 			.then((result) => {

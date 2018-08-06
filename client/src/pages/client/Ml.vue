@@ -136,7 +136,7 @@ export default {
   },
 
   mounted() {
-    getDefaultData().then(data => {
+    getDefaultData("/api/ml/getDefaultData?id=1").then(data => {
       this.formula = data.degreeCoefs;
       this.calcNum = data.points;
       this.iterations = data.iterations;
