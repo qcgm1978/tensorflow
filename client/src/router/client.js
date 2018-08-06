@@ -3,16 +3,7 @@ import Router from 'vue-router'
 
 import store from '@/store';
 
-import Mall from '@/pages/client/Mall';
-import MallShow from '@/pages/client/MallShow';
-import MallIndex from '@/pages/client/MallIndex';
-import MallLogin from '@/pages/client/MallLogin';
-import GoodsDetail from '@/pages/client/GoodsDetail';
-import GoodsList from '@/pages/client/GoodsList';
-import Personal from '@/pages/client/Personal';
-import MyOrder from '@/pages/client/MyOrder';
-import MyData from '@/pages/client/MyData';
-import Cart from '@/pages/client/Cart';
+
 import ErrorPage from '@/pages/ErrorPage';
 
 import TF from '@/pages/client/TF'
@@ -25,11 +16,7 @@ let router = new Router({
   routes: [
     {
       path: "/",
-      redirect: "/mall"
-    }, {
-      path: '/login',
-      name: 'MallLogin',
-      component: MallLogin
+      redirect: "/tf"
     }, {
       path: '/tf',
       name: 'tf',
@@ -48,63 +35,6 @@ let router = new Router({
         {
           path: 'addition-rnn',
           component: RNN
-        }
-      ]
-    }, {
-      path: '/mall',
-      name: 'Mall',
-      component: Mall,
-      redirect: '/mall/show',
-      children: [
-        {
-          path: 'show',
-          name: 'MallShow',
-          component: MallShow,
-          redirect: '/mall/show/index',
-          children: [
-            {
-              path: 'index',
-              name: 'MallIndex',
-              component: MallIndex
-            }, {
-              path: 'goodsList/:typeId/:keyword',
-              name: 'GoodsList',
-              component: GoodsList
-            },
-          ]
-        }, {
-          path: 'goods/:id',
-          name: 'GoodsDetail',
-          component: GoodsDetail
-        }, {
-          path: 'personal',
-          name: 'Personal',
-          component: Personal,
-          redirect: '/mall/personal/cart',
-          children: [
-            {
-              path: 'cart',
-              name: 'Cart',
-              component: Cart,
-              meta: {
-                requireLogin: true,
-              },
-            }, {
-              path: 'myData',
-              name: 'MyData',
-              component: MyData,
-              meta: {
-                requireLogin: true,
-              },
-            }, {
-              path: 'myOrder',
-              name: 'MyOrder',
-              component: MyOrder,
-              meta: {
-                requireLogin: true,
-              },
-            }
-          ]
         }
       ]
     }, {

@@ -5,39 +5,39 @@
     <div>
       <div class="setting">
         <span class="setting-label">Digits:</span>
-        <input id="digits" value="2"></input>
+        <input id="digits" v-bind:value="data.digits"/>
       </div>
       <div class="setting">
         <span class="setting-label">Training Size:</span>
-        <input id="trainingSize" value="5000"></input>
+        <input id="trainingSize" v-bind:value="data.trainingSize">
       </div>
       <div class="setting">
         <span class="setting-label">RNN Type:</span>
-        <select id="rnnType">
-          <option value="SimpleRNN">SimpleRNN</option>
+        <select id="rnnType" v-model="data.type">
           <option value="GRU">GRU</option>
+          <option value="SimpleRNN">SimpleRNN</option>
           <option value="LSTM">LSTM</option>
         </select>
       </div>
       <div class="setting">
         <span class="setting-label">RNN Layers:</span>
-        <input id="rnnLayers" value="1"></input>
+        <input id="rnnLayers" v-bind:value="data.layers">
       </div>
       <div class="setting">
         <span class="setting-label">RNN Hidden Layer Size:</span>
-        <input id="rnnLayerSize" value="128"></input>
+        <input id="rnnLayerSize" v-bind:value="data.layerSize">
       </div>
       <div class="setting">
         <span class="setting-label">Batch Size:</span>
-        <input id="batchSize" value="128"></input>
+        <input id="batchSize" v-bind:value="data.batchSize">
       </div>
       <div class="setting">
         <span class="setting-label">Train Iterations:</span>
-        <input id="trainIterations" value="100"></input>
+        <input id="trainIterations" v-bind:value="data.iterations">
       </div>
       <div class="setting">
         <span class="setting-label"># of test examples:</span>
-        <input id="numTestExamples" value="20"></input>
+        <input id="numTestExamples" v-bind:value="data.examples">
       </div>
     </div>
     <button id="trainModel">Train Model</button>
@@ -60,7 +60,16 @@ export default {
 
   data() {
     return {
-      data: ""
+      data: {
+        digits: 0,
+        trainingSize: 0,
+        type: "",
+        layers: 0,
+        layerSize: 0,
+        batchSize: 0,
+        iterations: 0,
+        examples: 0
+      }
     };
   },
 
@@ -111,6 +120,7 @@ export default {
   mounted() {
     getDefaultData("/api/ml/getRNNDefaultData?id=1").then(data => {
       debugger;
+      this.data = data;
     });
     this.runAdditionRNNDemo();
   }
