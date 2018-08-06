@@ -5,7 +5,8 @@
     <div>
       <div class="setting">
         <span class="setting-label">Digits:</span>
-        <input id="digits" v-bind:value="data.digits"/>
+        <input id="digits" v-model="data.digits" type='range' min="1" max="5"/>
+        <label for="digits">{{data.digits}}</label>
       </div>
       <div class="setting">
         <span class="setting-label">Training Size:</span>
@@ -40,8 +41,8 @@
         <input id="numTestExamples" v-bind:value="data.examples">
       </div>
     </div>
-    <button id="trainModel">Train Model</button>
-    <div id="trainStatus"></div>
+    <button id="trainModel" v-on:click='runAdditionRNNDemo'>Train Model</button>
+    <div id="trainStatus">{{trainStatus}}</div>
     <div>
       <div class="canvases" id="lossCanvas"></div>
       <div class="canvases" id="accuracyCanvas"></div>
@@ -60,6 +61,7 @@ export default {
 
   data() {
     return {
+      trainStatus: "",
       data: {
         digits: 0,
         trainingSize: 0,
@@ -75,54 +77,45 @@ export default {
 
   methods: {
     async runAdditionRNNDemo() {
-      document
-        .getElementById("trainModel")
-        .addEventListener("click", async () => {
-          const digits = +document.getElementById("digits").value;
-          const trainingSize = +document.getElementById("trainingSize").value;
-          const rnnTypeSelect = document.getElementById("rnnType");
-          const rnnType = rnnTypeSelect.options[
-            rnnTypeSelect.selectedIndex
-          ].getAttribute("value");
-          const layers = +document.getElementById("rnnLayers").value;
-          const hiddenSize = +document.getElementById("rnnLayerSize").value;
-          const batchSize = +document.getElementById("batchSize").value;
-          const trainIterations = +document.getElementById("trainIterations")
-            .value;
-          const numTestExamples = +document.getElementById("numTestExamples")
-            .value;
+      const digits = +this.data.digits;
+      const trainingSize = +this.data.trainingSize;
+      const rnnType = this.data.type;
+      const layers = +this.data.layers;
+      const hiddenSize = +this.data.layerSize;
+      const batchSize = +this.data.batchSize;
+      const trainIterations = +this.data.iterations;
+      const numTestExamples = +this.data.examples;
 
-          // Do some checks on the user-specified parameters.
-          const status = document.getElementById("trainStatus");
-          if (digits < 1 || digits > 5) {
-            status.textContent = "digits must be >= 1 and <= 5";
-            return;
-          }
-          const trainingSizeLimit = Math.pow(Math.pow(10, digits), 2);
-          if (trainingSize > trainingSizeLimit) {
-            status.textContent =
-              `With digits = ${digits}, you cannot have more than ` +
-              `${trainingSizeLimit} examples`;
-            return;
-          }
+      // Do some checks on the user-specified parameters.
+      if (digits < 1 || digits > 5) {
+        this.trainStatus = "digits must be >= 1 and <= 5";
+        return;
+      }
+      const trainingSizeLimit = Math.pow(Math.pow(10, digits), 2);
+      if (trainingSize > trainingSizeLimit) {
+        this.trainStatus =
+          `With digits = ${digits}, you cannot have more than ` +
+          `${trainingSizeLimit} examples`;
+        return;
+      }
 
-          const demo = new AdditionRNNDemo(
-            digits,
-            trainingSize,
-            rnnType,
-            layers,
-            hiddenSize
-          );
-          await demo.train(trainIterations, batchSize, numTestExamples);
-        });
+      const demo = new AdditionRNNDemo(
+        digits,
+        trainingSize,
+        rnnType,
+        layers,
+        hiddenSize
+      );
+      await demo.train(trainIterations, batchSize, numTestExamples);
     }
   },
   mounted() {
     getDefaultData("/api/ml/getRNNDefaultData?id=1").then(data => {
-      debugger;
+      // debugger;
+      // todo for speed
+      data.iterations = 10;
       this.data = data;
     });
-    this.runAdditionRNNDemo();
   }
 };
 </script>
