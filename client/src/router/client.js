@@ -15,8 +15,10 @@ import MyData from '@/pages/client/MyData';
 import Cart from '@/pages/client/Cart';
 import ErrorPage from '@/pages/ErrorPage';
 
+import TF from '@/pages/client/TF'
 import Page from '@/pages/client/Page'
-import Start from '@/pages/client/Start'
+import Start from '@/pages/client/Start';
+import RNN from '@/pages/client/RNN'
 Vue.use(Router);
 
 let router = new Router({
@@ -29,13 +31,25 @@ let router = new Router({
       name: 'MallLogin',
       component: MallLogin
     }, {
-      path: '/page',
-      name: 'Page',
-      component: Page,
-    }, {
-      path: '/start',
-      name: 'start',
-      component: Start
+      path: '/tf',
+      name: 'tf',
+      component: TF,
+      redirect: '/tf/start',
+      children: [
+        {
+          path: 'start',
+          component: Start
+        },
+        {
+          path: 'formula',
+          // name: 'Page',
+          component: Page,
+        },
+        {
+          path: 'addition-rnn',
+          component: RNN
+        }
+      ]
     }, {
       path: '/mall',
       name: 'Mall',
