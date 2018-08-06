@@ -6,13 +6,9 @@ import store from '@/store';
 import AdminLogin from '@/pages/admin/AdminLogin'
 import Backstage from '@/pages/admin/Backstage'
 import EditUser from '@/pages/admin/EditUser'
-import EditAdmin from '@/pages/admin/EditAdmin'
-import Goods from '@/pages/admin/Goods'
-import Orders from '@/pages/admin/Orders'
+
 import Ml from '@/pages/admin/Ml'
-import EditOrders from '@/pages/admin/EditOrders'
-import EditGoods from '@/pages/admin/EditGoods'
-import Messages from '@/pages/admin/Messages'
+
 import ErrorPage from '@/pages/ErrorPage'
 
 Vue.use(Router)

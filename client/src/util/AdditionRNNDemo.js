@@ -4,22 +4,122 @@ import { ML } from './ML';
 export default class AdditionRNNDemo extends ML {
     constructor(digits, trainingSize, rnnType, layers, hiddenSize) {
         super()
+        this.digits = digits;
+        this.trainingSize = trainingSize;
+        this.layers = layers;
+        this.hiddenSize = hiddenSize;
+        this.rnnType = rnnType;
+        this.chars = '0123456789+ ';
         // Prepare training data.
-        const chars = '0123456789+ ';
-        this.charTable = new CharacterTable(chars);
-        console.log('Generating training data');
-        const data = generateData(digits, trainingSize, false);
-        const split = Math.floor(trainingSize * 0.9);
-        this.trainData = data.slice(0, split);
-        this.testData = data.slice(split);
-        [this.trainXs, this.trainYs] =
-            convertDataToTensors(this.trainData, this.charTable, digits);
-        [this.testXs, this.testYs] =
-            convertDataToTensors(this.testData, this.charTable, digits);
-        this.model = createAndCompileModel(
-            layers, hiddenSize, rnnType, digits, chars.length);
-    }
+        this.split = Math.floor(this.trainingSize * 0.9);
 
+        super.generatePattern(this.defineSevenTimeSeries())
+    }
+    sixth() {
+        this.createAndCompileModel(
+        );
+
+    }
+    fifth() {
+        switch (this.rnnType) {
+            case 'SimpleRNN':
+                this.model.add(tf.layers.simpleRNN({
+                    units: this.hiddenSize,
+                    recurrentInitializer: 'glorotNormal',
+                    returnSequences: true
+                }));
+                break;
+            case 'GRU':
+                this.model.add(tf.layers.gru({
+                    units: this.hiddenSize,
+                    recurrentInitializer: 'glorotNormal',
+                    returnSequences: true
+                }));
+                break;
+            case 'LSTM':
+                this.model.add(tf.layers.lstm({
+                    units: this.hiddenSize,
+                    recurrentInitializer: 'glorotNormal',
+                    returnSequences: true
+                }));
+                break;
+            default:
+                throw new Error(`Unsupported RNN type: '${this.rnnType}'`);
+        }
+    }
+    fourth() {
+        this.charTable = new CharacterTable(this.chars);
+        console.log('Generating training data');
+
+        this.testData = this.data.slice(this.split);
+        [this.trainXs, this.trainYs] =
+            convertDataToTensors(this.trainData, this.charTable, this.digits);
+        [this.testXs, this.testYs] =
+            convertDataToTensors(this.testData, this.charTable, this.digits);
+    }
+    third() {
+        this.trainData = this.data.slice(0, this.split);
+    }
+    second() {
+        this.data = generateData(this.digits, this.trainingSize, false);
+
+    }
+    first() {
+        this.loss = 'categoricalCrossentropy'
+    }
+    defineSevenTimeSeries() {
+        const sevenSteps = [
+            this.first,
+            this.second,
+            this.third,
+            this.fourth,
+            { fifth: this.fifth },
+            this.sixth,
+            //             { sevenFeedData: super.tfTrain }
+        ];
+        return sevenSteps;
+    }
+    createAndCompileModel() {
+        const vocabularySize = this.chars.length
+        const maxLen = this.digits + 1 + this.digits;
+
+        this.model = tf.sequential();
+        switch (this.rnnType) {
+            case 'SimpleRNN':
+                this.model.add(tf.layers.simpleRNN({
+                    units: this.hiddenSize,
+                    recurrentInitializer: 'glorotNormal',
+                    inputShape: [maxLen, vocabularySize]
+                }));
+                break;
+            case 'GRU':
+                this.model.add(tf.layers.gru({
+                    units: this.hiddenSize,
+                    recurrentInitializer: 'glorotNormal',
+                    inputShape: [maxLen, vocabularySize]
+                }));
+                break;
+            case 'LSTM':
+                this.model.add(tf.layers.lstm({
+                    units: this.hiddenSize,
+                    recurrentInitializer: 'glorotNormal',
+                    inputShape: [maxLen, vocabularySize]
+                }));
+                break;
+            default:
+                throw new Error(`Unsupported RNN type: '${rnnType}'`);
+        }
+        this.model.add(tf.layers.repeatVector({ n: this.digits + 1 }));
+        this.fifth();
+        this.model.add(tf.layers.timeDistributed(
+            { layer: tf.layers.dense({ units: vocabularySize }) }));
+        this.model.add(tf.layers.activation({ activation: 'softmax' }));
+        this.model.compile({
+            loss: this.loss,
+            optimizer: 'adam',
+            metrics: ['accuracy']
+        });
+    }
     async train(iterations, batchSize, numTestExamples) {
         const lossValues = [];
         const accuracyValues = [];
@@ -183,69 +283,3 @@ function convertDataToTensors(data, charTable, digits) {
     ];
 }
 
-function createAndCompileModel(
-    layers, hiddenSize, rnnType, digits, vocabularySize) {
-    const maxLen = digits + 1 + digits;
-
-    const model = tf.sequential();
-    switch (rnnType) {
-        case 'SimpleRNN':
-            model.add(tf.layers.simpleRNN({
-                units: hiddenSize,
-                recurrentInitializer: 'glorotNormal',
-                inputShape: [maxLen, vocabularySize]
-            }));
-            break;
-        case 'GRU':
-            model.add(tf.layers.gru({
-                units: hiddenSize,
-                recurrentInitializer: 'glorotNormal',
-                inputShape: [maxLen, vocabularySize]
-            }));
-            break;
-        case 'LSTM':
-            model.add(tf.layers.lstm({
-                units: hiddenSize,
-                recurrentInitializer: 'glorotNormal',
-                inputShape: [maxLen, vocabularySize]
-            }));
-            break;
-        default:
-            throw new Error(`Unsupported RNN type: '${rnnType}'`);
-    }
-    model.add(tf.layers.repeatVector({ n: digits + 1 }));
-    switch (rnnType) {
-        case 'SimpleRNN':
-            model.add(tf.layers.simpleRNN({
-                units: hiddenSize,
-                recurrentInitializer: 'glorotNormal',
-                returnSequences: true
-            }));
-            break;
-        case 'GRU':
-            model.add(tf.layers.gru({
-                units: hiddenSize,
-                recurrentInitializer: 'glorotNormal',
-                returnSequences: true
-            }));
-            break;
-        case 'LSTM':
-            model.add(tf.layers.lstm({
-                units: hiddenSize,
-                recurrentInitializer: 'glorotNormal',
-                returnSequences: true
-            }));
-            break;
-        default:
-            throw new Error(`Unsupported RNN type: '${rnnType}'`);
-    }
-    model.add(tf.layers.timeDistributed(
-        { layer: tf.layers.dense({ units: vocabularySize }) }));
-    model.add(tf.layers.activation({ activation: 'softmax' }));
-    model.compile({
-        loss: 'categoricalCrossentropy',
-        optimizer: 'adam',
-        metrics: ['accuracy']
-    });
-    return model;
-}
