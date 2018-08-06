@@ -52,12 +52,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       inject: true,
       chunks: ['app']
     }),
-    new HtmlWebpackPlugin({
-      filename: 'admin.html',
-      template: 'admin.html',
-      inject: true,
-      chunks: ['admin']
-    }),
+    // new HtmlWebpackPlugin({
+    //   filename: 'admin.html',
+    //   template: 'admin.html',
+    //   inject: true,
+    //   chunks: ['admin']
+    // }),
   ]
 })
 

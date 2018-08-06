@@ -10,7 +10,6 @@ export default class AdditionRNNDemo extends ML {
         this.hiddenSize = hiddenSize;
         this.rnnType = rnnType;
         this.chars = '0123456789+ ';
-        // Prepare training data.
         this.split = Math.floor(this.trainingSize * 0.9);
 
         super.generatePattern(this.defineSevenTimeSeries())
@@ -21,69 +20,12 @@ export default class AdditionRNNDemo extends ML {
 
     }
     fifth() {
-        switch (this.rnnType) {
-            case 'SimpleRNN':
-                this.model.add(tf.layers.simpleRNN({
-                    units: this.hiddenSize,
-                    recurrentInitializer: 'glorotNormal',
-                    returnSequences: true
-                }));
-                break;
-            case 'GRU':
-                this.model.add(tf.layers.gru({
-                    units: this.hiddenSize,
-                    recurrentInitializer: 'glorotNormal',
-                    returnSequences: true
-                }));
-                break;
-            case 'LSTM':
-                this.model.add(tf.layers.lstm({
-                    units: this.hiddenSize,
-                    recurrentInitializer: 'glorotNormal',
-                    returnSequences: true
-                }));
-                break;
-            default:
-                throw new Error(`Unsupported RNN type: '${this.rnnType}'`);
-        }
-    }
-    fourth() {
-        this.charTable = new CharacterTable(this.chars);
-        console.log('Generating training data');
-
-        this.testData = this.data.slice(this.split);
-        [this.trainXs, this.trainYs] =
-            convertDataToTensors(this.trainData, this.charTable, this.digits);
-        [this.testXs, this.testYs] =
-            convertDataToTensors(this.testData, this.charTable, this.digits);
-    }
-    third() {
-        this.trainData = this.data.slice(0, this.split);
-    }
-    second() {
-        this.data = generateData(this.digits, this.trainingSize, false);
-
-    }
-    first() {
-        this.loss = 'categoricalCrossentropy'
-    }
-    defineSevenTimeSeries() {
-        const sevenSteps = [
-            this.first,
-            this.second,
-            this.third,
-            this.fourth,
-            { fifth: this.fifth },
-            this.sixth,
-            //             { sevenFeedData: super.tfTrain }
-        ];
-        return sevenSteps;
-    }
-    createAndCompileModel() {
         const vocabularySize = this.chars.length
         const maxLen = this.digits + 1 + this.digits;
 
         this.model = tf.sequential();
+
+        // this.fifth();
         switch (this.rnnType) {
             case 'SimpleRNN':
                 this.model.add(tf.layers.simpleRNN({
@@ -110,16 +52,130 @@ export default class AdditionRNNDemo extends ML {
                 throw new Error(`Unsupported RNN type: '${rnnType}'`);
         }
         this.model.add(tf.layers.repeatVector({ n: this.digits + 1 }));
-        this.fifth();
+        switch (this.rnnType) {
+            case 'SimpleRNN':
+                this.model.add(tf.layers.simpleRNN({
+                    units: this.hiddenSize,
+                    recurrentInitializer: 'glorotNormal',
+                    returnSequences: true
+                }));
+                break;
+            case 'GRU':
+                this.model.add(tf.layers.gru({
+                    units: this.hiddenSize,
+                    recurrentInitializer: 'glorotNormal',
+                    returnSequences: true
+                }));
+                break;
+            case 'LSTM':
+                this.model.add(tf.layers.lstm({
+                    units: this.hiddenSize,
+                    recurrentInitializer: 'glorotNormal',
+                    returnSequences: true
+                }));
+                break;
+            default:
+                throw new Error(`Unsupported RNN type: '${this.rnnType}'`);
+        }
         this.model.add(tf.layers.timeDistributed(
             { layer: tf.layers.dense({ units: vocabularySize }) }));
         this.model.add(tf.layers.activation({ activation: 'softmax' }));
+
+    }
+    fourth() {
+        this.charTable = new CharacterTable(this.chars);
+        console.log('Generating training data');
+
+        this.testData = this.data.slice(this.split);
+        [this.trainXs, this.trainYs] =
+            this.convertDataToTensors(this.trainData);
+        [this.testXs, this.testYs] =
+            this.convertDataToTensors(this.testData);
+    }
+    third() {
+        // Prepare training data.
+        this.trainData = this.data.slice(0, this.split);
+    }
+    second() {
+        this.generateData(false);
+
+    }
+    first() {
+        this.loss = 'categoricalCrossentropy'
+    }
+    defineSevenTimeSeries() {
+        const sevenSteps = [
+            this.first,
+            this.second,
+            this.third,
+            this.fourth,
+            { fifth: this.fifth },
+            this.sixth,
+            //             { sevenFeedData: super.tfTrain }
+        ];
+        return sevenSteps;
+    }
+    createAndCompileModel() {
+        this.fifth()
         this.model.compile({
             loss: this.loss,
             optimizer: 'adam',
             metrics: ['accuracy']
         });
     }
+    generateData(invert) {
+        const [digits, numExamples] = [this.digits, this.trainingSize];
+        const digitArray = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        const arraySize = digitArray.length;
+
+        const output = [];
+        const maxLen = digits + 1 + digits;
+
+        const f = () => {
+            let str = '';
+            while (str.length < digits) {
+                const index = Math.floor(Math.random() * arraySize);
+                str += digitArray[index];
+            }
+            return Number.parseInt(str);
+        };
+
+        const seen = new Set();
+        while (output.length < numExamples) {
+            const a = f();
+            const b = f();
+            const sorted = b > a ? [a, b] : [b, a];
+            const key = sorted[0] + '`' + sorted[1];
+            if (seen.has(key)) {
+                continue;
+            }
+            seen.add(key);
+
+            // Pad the data with spaces such that it is always maxLen.
+            const q = `${a}+${b}`;
+            const query = q + ' '.repeat(maxLen - q.length);
+            let ans = (a + b).toString();
+            // Answer can be of maximum size `digits + 1`.
+            ans += ' '.repeat(digits + 1 - ans.length);
+
+            if (invert) {
+                throw new Error('invert is not implemented yet');
+            }
+            output.push([query, ans]);
+        }
+        this.data = output;
+    }
+    convertDataToTensors(data) {
+        const [charTable, digits] = [this.charTable, this.digits]
+        const maxLen = digits + 1 + digits;
+        const questions = data.map(datum => datum[0]);
+        const answers = data.map(datum => datum[1]);
+        return [
+            charTable.encodeBatch(questions, maxLen),
+            charTable.encodeBatch(answers, digits + 1),
+        ];
+    }
+
     async train(iterations, batchSize, numTestExamples) {
         const lossValues = [];
         const accuracyValues = [];
@@ -231,55 +287,6 @@ export default class AdditionRNNDemo extends ML {
         }
     }
 }
-function generateData(digits, numExamples, invert) {
-    const digitArray = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    const arraySize = digitArray.length;
 
-    const output = [];
-    const maxLen = digits + 1 + digits;
 
-    const f = () => {
-        let str = '';
-        while (str.length < digits) {
-            const index = Math.floor(Math.random() * arraySize);
-            str += digitArray[index];
-        }
-        return Number.parseInt(str);
-    };
-
-    const seen = new Set();
-    while (output.length < numExamples) {
-        const a = f();
-        const b = f();
-        const sorted = b > a ? [a, b] : [b, a];
-        const key = sorted[0] + '`' + sorted[1];
-        if (seen.has(key)) {
-            continue;
-        }
-        seen.add(key);
-
-        // Pad the data with spaces such that it is always maxLen.
-        const q = `${a}+${b}`;
-        const query = q + ' '.repeat(maxLen - q.length);
-        let ans = (a + b).toString();
-        // Answer can be of maximum size `digits + 1`.
-        ans += ' '.repeat(digits + 1 - ans.length);
-
-        if (invert) {
-            throw new Error('invert is not implemented yet');
-        }
-        output.push([query, ans]);
-    }
-    return output;
-}
-
-function convertDataToTensors(data, charTable, digits) {
-    const maxLen = digits + 1 + digits;
-    const questions = data.map(datum => datum[0]);
-    const answers = data.map(datum => datum[1]);
-    return [
-        charTable.encodeBatch(questions, maxLen),
-        charTable.encodeBatch(answers, digits + 1),
-    ];
-}
 
