@@ -7,7 +7,7 @@ import store from '@/store';
 import ErrorPage from '@/pages/ErrorPage';
 
 import TF from '@/pages/client/TF'
-import Page from '@/pages/client/Page'
+import Formula from '@/pages/client/Formula'
 import Start from '@/pages/client/Start';
 import RNN from '@/pages/client/RNN'
 Vue.use(Router);
@@ -29,8 +29,8 @@ let router = new Router({
         },
         {
           path: 'formula',
-          // name: 'Page',
-          component: Page,
+          // name: 'Formula',
+          component: Formula,
         },
         {
           path: 'addition-rnn',

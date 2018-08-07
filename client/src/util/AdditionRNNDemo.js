@@ -14,12 +14,24 @@ export default class AdditionRNNDemo extends ML {
 
         super.generatePattern(this.defineSevenTimeSeries())
     }
+    defineSevenTimeSeries() {
+        const sevenSteps = [
+            this.defineLoss,
+            this.generateData.bind(this, false),
+            this.generateTrainData,
+            this.generateTestData,
+            this.getAlgorithm,
+            this.compileModel,
+            //             { sevenFeedData: super.tfTrain }
+        ];
+        return sevenSteps;
+    }
     sixth() {
         this.createAndCompileModel(
         );
 
     }
-    fifth() {
+    getAlgorithm() {
         const vocabularySize = this.chars.length
         const maxLen = this.digits + 1 + this.digits;
 
@@ -82,7 +94,7 @@ export default class AdditionRNNDemo extends ML {
         this.model.add(tf.layers.activation({ activation: 'softmax' }));
 
     }
-    fourth() {
+    generateTestData() {
         this.charTable = new CharacterTable(this.chars);
         console.log('Generating training data');
 
@@ -92,7 +104,7 @@ export default class AdditionRNNDemo extends ML {
         [this.testXs, this.testYs] =
             this.convertDataToTensors(this.testData);
     }
-    third() {
+    generateTrainData() {
         // Prepare training data.
         this.trainData = this.data.slice(0, this.split);
     }
@@ -100,23 +112,12 @@ export default class AdditionRNNDemo extends ML {
         this.generateData(false);
 
     }
-    first() {
+    defineLoss() {
         this.loss = 'categoricalCrossentropy'
     }
-    defineSevenTimeSeries() {
-        const sevenSteps = [
-            this.first,
-            this.second,
-            this.third,
-            this.fourth,
-            { fifth: this.fifth },
-            this.sixth,
-            //             { sevenFeedData: super.tfTrain }
-        ];
-        return sevenSteps;
-    }
-    createAndCompileModel() {
-        this.fifth()
+    
+    compileModel() {
+        // this.fifth()
         this.model.compile({
             loss: this.loss,
             optimizer: 'adam',

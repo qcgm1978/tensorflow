@@ -75,6 +75,7 @@ export class ML {
             }
         }
     }
+
     tidy(arr, x) {
         const str = this.formula;
         return tf.tidy(() => {
