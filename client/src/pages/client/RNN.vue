@@ -34,7 +34,7 @@
       </div>
       <div class="setting">
         <span class="setting-label">Train Iterations:</span>
-        <input id="trainIterations" v-bind:value="data.iterations">
+        <input id="trainIterations" v-model="data.iterations">
       </div>
       <div class="setting">
         <span class="setting-label"># of test examples:</span>
@@ -48,7 +48,11 @@
       <div class="canvases" id="accuracyCanvas"></div>
       <div class="canvases" id="examplesPerSecCanvas"></div>
     </div>
-    <div id="testExamples"></div>
+    <div id="testExamples">
+      <div v-for="(example,index) in examples" :key="index" v-bind:class="isCorrect[index] ? 'answer-correct' : 'answer-wrong'">
+        {{example}}
+      </div>
+    </div>
   </div>
   </div>
 </template>
@@ -61,6 +65,8 @@ export default {
 
   data() {
     return {
+      examples: [],
+      isCorrect: [],
       trainStatus: "",
       data: {
         digits: 0,
@@ -106,7 +112,31 @@ export default {
         layers,
         hiddenSize
       );
-      await demo.train(trainIterations, batchSize, numTestExamples);
+      await demo.train({
+        iterations: trainIterations,
+        batchSize,
+        numTestExamples,
+        callback: ({
+          i,
+          trainLoss,
+          trainAccuracy,
+          valLoss,
+          valAccuracy,
+          examplesPerSec,
+          isCorrect,
+          examples
+        }) => {
+          this.isCorrect = isCorrect;
+          this.examples = examples;
+          this.trainStatus = `Iteration ${i}: train loss = ${trainLoss.toFixed(
+            6
+          )}
+                train accuracy = ${trainAccuracy.toFixed(6)}
+                validation loss = ${valLoss.toFixed(6)}
+                validation accuracy = ${valAccuracy.toFixed(6)}
+                (${examplesPerSec.toFixed(1)} examples/s)`;
+        }
+      });
     }
   },
   mounted() {

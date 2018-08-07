@@ -1,5 +1,8 @@
 <template>
-    <p>
+    <p style="
+    font-size: 20px;
+    line-height: 23px;
+">
         Most machine learning algorithms follow this pattern:
         <ol>
             <li>We have to figure out the

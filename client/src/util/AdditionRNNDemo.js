@@ -16,11 +16,11 @@ export default class AdditionRNNDemo extends ML {
     }
     defineSevenTimeSeries() {
         const sevenSteps = [
+            this.getAlgorithm,
+            this.generateIniData.bind(this, false),
             this.defineLoss,
-            this.generateData.bind(this, false),
             this.generateTrainData,
             this.generateTestData,
-            this.getAlgorithm,
             this.compileModel,
             //             { sevenFeedData: super.tfTrain }
         ];
@@ -108,14 +108,11 @@ export default class AdditionRNNDemo extends ML {
         // Prepare training data.
         this.trainData = this.data.slice(0, this.split);
     }
-    second() {
-        this.generateData(false);
 
-    }
     defineLoss() {
         this.loss = 'categoricalCrossentropy'
     }
-    
+
     compileModel() {
         // this.fifth()
         this.model.compile({
@@ -124,7 +121,7 @@ export default class AdditionRNNDemo extends ML {
             metrics: ['accuracy']
         });
     }
-    generateData(invert) {
+    generateIniData(invert) {
         const [digits, numExamples] = [this.digits, this.trainingSize];
         const digitArray = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
         const arraySize = digitArray.length;
@@ -177,7 +174,7 @@ export default class AdditionRNNDemo extends ML {
         ];
     }
 
-    async train(iterations, batchSize, numTestExamples) {
+    async train({ iterations, batchSize, numTestExamples, callback }) {
         const lossValues = [];
         const accuracyValues = [];
         const examplesPerSecValues = [];
@@ -194,12 +191,6 @@ export default class AdditionRNNDemo extends ML {
             const trainAccuracy = history.history['acc'][0];
             const valLoss = history.history['val_loss'][0];
             const valAccuracy = history.history['val_acc'][0];
-            document.getElementById('trainStatus').textContent =
-                `Iteration ${i}: train loss = ${trainLoss.toFixed(6)}; ` +
-                `train accuracy = ${trainAccuracy.toFixed(6)}; ` +
-                `validation loss = ${valLoss.toFixed(6)}; ` +
-                `validation accuracy = ${valAccuracy.toFixed(6)} ` +
-                `(${examplesPerSec.toFixed(1)} examples/s)`;
 
             lossValues.push({ 'epoch': i, 'loss': trainLoss, 'set': 'train' });
             lossValues.push({ 'epoch': i, 'loss': valLoss, 'set': 'validation' });
@@ -273,16 +264,8 @@ export default class AdditionRNNDemo extends ML {
                 }
             });
 
-            const examplesDiv = document.getElementById('testExamples');
-            while (examplesDiv.firstChild) {
-                examplesDiv.removeChild(examplesDiv.firstChild);
-            }
-            for (let i = 0; i < examples.length; ++i) {
-                const exampleDiv = document.createElement('div');
-                exampleDiv.textContent = examples[i];
-                exampleDiv.className = isCorrect[i] ? 'answer-correct' : 'answer-wrong';
-                examplesDiv.appendChild(exampleDiv);
-            }
+            callback({ i, trainLoss, trainAccuracy, valLoss, valAccuracy, examplesPerSec, isCorrect, examples })
+
 
             await tf.nextFrame();
         }
