@@ -10,7 +10,7 @@
       </div>
       <div class="setting">
         <span class="setting-label">Training Size:</span>
-        <input id="trainingSize" v-bind:value="data.trainingSize">
+        <input id="trainingSize" v-model="data.trainingSize">
       </div>
       <div class="setting">
         <span class="setting-label">RNN Type:</span>
@@ -22,15 +22,15 @@
       </div>
       <div class="setting">
         <span class="setting-label">RNN Layers:</span>
-        <input id="rnnLayers" v-bind:value="data.layers">
+        <input id="rnnLayers" v-model="data.layers">
       </div>
       <div class="setting">
         <span class="setting-label">RNN Hidden Layer Size:</span>
-        <input id="rnnLayerSize" v-bind:value="data.layerSize">
+        <input id="rnnLayerSize" v-model="data.layerSize">
       </div>
       <div class="setting">
         <span class="setting-label">Batch Size:</span>
-        <input id="batchSize" v-bind:value="data.batchSize">
+        <input id="batchSize" v-model="data.batchSize">
       </div>
       <div class="setting">
         <span class="setting-label">Train Iterations:</span>
@@ -38,7 +38,7 @@
       </div>
       <div class="setting">
         <span class="setting-label"># of test examples:</span>
-        <input id="numTestExamples" v-bind:value="data.examples">
+        <input id="numTestExamples" v-model="data.examples">
       </div>
     </div>
     <button id="trainModel" v-on:click='runAdditionRNNDemo'>Train Model</button>
@@ -135,6 +135,9 @@ export default {
                 validation loss = ${valLoss.toFixed(6)}
                 validation accuracy = ${valAccuracy.toFixed(6)}
                 (${examplesPerSec.toFixed(1)} examples/s)`;
+          if (i === this.data.iterations - 1) {
+            debugger;
+          }
         }
       });
     }

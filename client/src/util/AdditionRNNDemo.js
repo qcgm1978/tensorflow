@@ -173,7 +173,47 @@ export default class AdditionRNNDemo extends ML {
             charTable.encodeBatch(answers, digits + 1),
         ];
     }
+    plot({ lossValues, accuracyValues, examplesPerSecValues }) {
+        embed(
+            '#lossCanvas', {
+                '$schema': 'https://vega.github.io/schema/vega-lite/v2.json',
+                'data': { 'values': lossValues },
+                'mark': 'line',
+                'encoding': {
+                    'x': { 'field': 'epoch', 'type': 'ordinal' },
+                    'y': { 'field': 'loss', 'type': 'quantitative' },
+                    'color': { 'field': 'set', 'type': 'nominal' },
+                },
+                'width': 400,
+            },
+            {});
 
+        embed(
+            '#accuracyCanvas', {
+                '$schema': 'https://vega.github.io/schema/vega-lite/v2.json',
+                'data': { 'values': accuracyValues },
+                'mark': 'line',
+                'encoding': {
+                    'x': { 'field': 'epoch', 'type': 'ordinal' },
+                    'y': { 'field': 'accuracy', 'type': 'quantitative' },
+                    'color': { 'field': 'set', 'type': 'nominal' },
+                },
+                'width': 400,
+            },
+            {});
+        embed(
+            '#examplesPerSecCanvas', {
+                '$schema': 'https://vega.github.io/schema/vega-lite/v2.json',
+                'data': { 'values': examplesPerSecValues },
+                'mark': 'line',
+                'encoding': {
+                    'x': { 'field': 'epoch', 'type': 'ordinal' },
+                    'y': { 'field': 'examples/s', 'type': 'quantitative' },
+                },
+                'width': 400,
+            },
+            {});
+    }
     async train({ iterations, batchSize, numTestExamples, callback }) {
         const lossValues = [];
         const accuracyValues = [];
@@ -194,49 +234,12 @@ export default class AdditionRNNDemo extends ML {
 
             lossValues.push({ 'epoch': i, 'loss': trainLoss, 'set': 'train' });
             lossValues.push({ 'epoch': i, 'loss': valLoss, 'set': 'validation' });
-            embed(
-                '#lossCanvas', {
-                    '$schema': 'https://vega.github.io/schema/vega-lite/v2.json',
-                    'data': { 'values': lossValues },
-                    'mark': 'line',
-                    'encoding': {
-                        'x': { 'field': 'epoch', 'type': 'ordinal' },
-                        'y': { 'field': 'loss', 'type': 'quantitative' },
-                        'color': { 'field': 'set', 'type': 'nominal' },
-                    },
-                    'width': 400,
-                },
-                {});
+            examplesPerSecValues.push({ 'epoch': i, 'examples/s': examplesPerSec });
             accuracyValues.push(
                 { 'epoch': i, 'accuracy': trainAccuracy, 'set': 'train' });
             accuracyValues.push(
                 { 'epoch': i, 'accuracy': valAccuracy, 'set': 'validation' });
-            embed(
-                '#accuracyCanvas', {
-                    '$schema': 'https://vega.github.io/schema/vega-lite/v2.json',
-                    'data': { 'values': accuracyValues },
-                    'mark': 'line',
-                    'encoding': {
-                        'x': { 'field': 'epoch', 'type': 'ordinal' },
-                        'y': { 'field': 'accuracy', 'type': 'quantitative' },
-                        'color': { 'field': 'set', 'type': 'nominal' },
-                    },
-                    'width': 400,
-                },
-                {});
-            examplesPerSecValues.push({ 'epoch': i, 'examples/s': examplesPerSec });
-            embed(
-                '#examplesPerSecCanvas', {
-                    '$schema': 'https://vega.github.io/schema/vega-lite/v2.json',
-                    'data': { 'values': examplesPerSecValues },
-                    'mark': 'line',
-                    'encoding': {
-                        'x': { 'field': 'epoch', 'type': 'ordinal' },
-                        'y': { 'field': 'examples/s', 'type': 'quantitative' },
-                    },
-                    'width': 400,
-                },
-                {});
+            this.plot({ lossValues, accuracyValues, examplesPerSecValues })
 
             if (this.testXsForDisplay == null ||
                 this.testXsForDisplay.shape[0] !== numTestExamples) {

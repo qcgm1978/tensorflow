@@ -107,3 +107,34 @@ exports.MlDataModel = sequelize.define('data', {
 }, {
 		timestamps: false,
 	});
+exports.MlDataModel = sequelize.define('rnn-data', {
+	id: {
+		type: Sequelize.BIGINT,
+		primaryKey: true,
+		allowNull: false,
+		autoIncrement: true
+	},
+	configData: {
+		type: Sequelize.JSON,
+		allowNull: false
+	},
+	loss: {
+		type: Sequelize.FLOAT,
+		allowNull: false
+	},
+	trainAccuracy: {
+		type: Sequelize.FLOAT,
+		allowNull: false
+	},
+	validatAccuracy: {
+		type: Sequelize.FLOAT,
+		allowNull: false
+	},
+	formula: {
+		type: Sequelize.STRING,
+		allowNull: false
+	}
+
+}, {
+		timestamps: false,
+	});
