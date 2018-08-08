@@ -174,3 +174,37 @@ exports.saveData = async (ctx) => {
 		}
 	}
 }
+
+exports.saveRNNData = async (ctx) => {
+	try {
+		const data = ctx.request.body;
+		const compareData = { configData: data.configData };
+		const exsitedData = await MlModel.MlRNNDataModel.findOrCreate({
+			where: compareData,
+			// attributes: { exclude: ['data'] },
+			defaults: data
+		}).spread((dataTable, created) => {
+			// console.log(dataTable.get({
+			// 	plain: true
+			// }))
+			ctx.body = created ? {
+				code: 0,
+				message: 'insert successfully'
+			} : {
+					code: 10000,
+					message: `repeated fields: ${JSON.stringify(compareData)}`
+				}
+
+
+		});
+
+
+
+	}
+	catch (e) {
+		ctx.body = {
+			code: 10000,
+			message: e.message
+		}
+	}
+}

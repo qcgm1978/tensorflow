@@ -46,9 +46,9 @@ function getDefaultData(url) {
 	})
 }
 
-function saveData(data) {
+function saveData({ data, url }) {
 	debugger;
-	const res = axios.post('/api/ml/saveData', data);
+	const res = axios.post(url, data);
 	return new Promise((resolve, reject) => {
 		res
 			.then((result) => {

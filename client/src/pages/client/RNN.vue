@@ -116,37 +116,77 @@ export default {
         iterations: trainIterations,
         batchSize,
         numTestExamples,
-        callback: ({
-          i,
-          trainLoss,
-          trainAccuracy,
-          valLoss,
-          valAccuracy,
-          examplesPerSec,
-          isCorrect,
-          examples
-        }) => {
-          this.isCorrect = isCorrect;
-          this.examples = examples;
-          this.trainStatus = `Iteration ${i}: train loss = ${trainLoss.toFixed(
-            6
-          )}
-                train accuracy = ${trainAccuracy.toFixed(6)}
-                validation loss = ${valLoss.toFixed(6)}
-                validation accuracy = ${valAccuracy.toFixed(6)}
-                (${examplesPerSec.toFixed(1)} examples/s)`;
-          if (i === this.data.iterations - 1) {
-            debugger;
-          }
-        }
+        callback: this.visualizeAndSave
       });
+    },
+    visualizeAndSave({
+      i,
+      trainLoss,
+      trainAccuracy,
+      valLoss,
+      valAccuracy,
+      examplesPerSec,
+      isCorrect,
+      examples
+    }) {
+      this.isCorrect = isCorrect;
+      this.examples = examples;
+      trainLoss = trainLoss.toFixed(6);
+      examplesPerSec = examplesPerSec.toFixed(1);
+      trainAccuracy = trainAccuracy.toFixed(6);
+      const validationLoss = valLoss.toFixed(6),
+        validationAccuracy = valAccuracy.toFixed(6);
+      this.trainStatus = `Iteration ${i}: train loss = ${trainLoss}
+                train accuracy = ${trainAccuracy}
+                validation loss = ${validationLoss}
+                validation accuracy = ${validationAccuracy}
+                (${examplesPerSec} examples/s)`;
+      if (i === this.data.iterations - 1) {
+        const correctLen = isCorrect.filter(item => item).length;
+        if (correctLen === 0) {
+          console.error(
+            "No correct calculation. Update the train iterations and retry."
+          );
+          return;
+        }
+        const wrongLen = this.data.iterations - correctLen,
+          obj = this.examples.reduce(
+            (accumulator, item, index) => {
+              isCorrect[index]
+                ? accumulator.correct.push(item)
+                : accumulator.wrong.push(item);
+              return accumulator;
+            },
+
+            {
+              correct: [],
+              wrong: []
+            }
+          );
+        const [correct, wrong] = [obj.correct, obj.wrong];
+        saveData({
+          data: {
+            configData: this.data,
+            trainLoss,
+            trainAccuracy,
+            validationLoss,
+            validationAccuracy,
+            examplesPerSec,
+            correct,
+            wrong,
+            correctLen,
+            wrongLen
+          },
+          url: "/api/ml/saveRNNData"
+        });
+      }
     }
   },
   mounted() {
     getDefaultData("/api/ml/getRNNDefaultData?id=1").then(data => {
       // debugger;
       // todo for speed
-      data.iterations = 10;
+      // data.iterations = 1;
       this.data = data;
     });
   }

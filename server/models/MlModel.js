@@ -107,7 +107,7 @@ exports.MlDataModel = sequelize.define('data', {
 }, {
 		timestamps: false,
 	});
-exports.MlDataModel = sequelize.define('rnn-data', {
+exports.MlRNNDataModel = sequelize.define('rnn-data', {
 	id: {
 		type: Sequelize.BIGINT,
 		primaryKey: true,
@@ -118,7 +118,7 @@ exports.MlDataModel = sequelize.define('rnn-data', {
 		type: Sequelize.JSON,
 		allowNull: false
 	},
-	loss: {
+	validationLoss: {
 		type: Sequelize.FLOAT,
 		allowNull: false
 	},
@@ -126,12 +126,28 @@ exports.MlDataModel = sequelize.define('rnn-data', {
 		type: Sequelize.FLOAT,
 		allowNull: false
 	},
-	validatAccuracy: {
+	validationAccuracy: {
 		type: Sequelize.FLOAT,
 		allowNull: false
 	},
-	formula: {
-		type: Sequelize.STRING,
+	correctLen: {
+		type: Sequelize.INTEGER,
+		allowNull: false
+	},
+	correct: {
+		type: Sequelize.JSON,
+		allowNull: false
+	},
+	wrongLen: {
+		type: Sequelize.INTEGER,
+		allowNull: false
+	},
+	wrong: {
+		type: Sequelize.JSON,
+		allowNull: false
+	},
+	examplesPerSec: {
+		type: Sequelize.FLOAT,
 		allowNull: false
 	}
 

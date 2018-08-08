@@ -99,7 +99,8 @@ export default {
           rate: this.rate,
           periods: this.calcNum,
           iterations: this.iterations
-        }
+        },
+        url: "/api/ml/saveData"
       });
     },
     navTo(route) {
