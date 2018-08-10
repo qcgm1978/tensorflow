@@ -116,14 +116,15 @@ export class ML extends GUI {
         return tf.tensor1d(values);
     }
 
-    async sevenFeedData(xs, ys) {
-        for (let iter = 0; iter < this.numIterations; iter++) {
+    async sevenFeedData(obj) {
+        obj.iterations && (this.numIterations = obj.iterations);
+        for (let i = 0; i < this.numIterations; i++) {
 
             // debugger;
-            this.calMetricDerivatives(xs, ys);
+            await this.calMetricDerivatives({ ...obj, i });
             // Use tf.nextFrame to not block the browser.
             await tf.nextFrame();
         }
-        return { xs: xs.dataSync(), ys: ys.dataSync() }
+        return obj.xs && { xs: obj.xs.dataSync(), ys: obj.ys.dataSync() }
     }
 }

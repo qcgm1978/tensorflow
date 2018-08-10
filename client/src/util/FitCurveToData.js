@@ -190,7 +190,7 @@ export default class FitCurveToData extends ML {
     async doALearning() {
         const that = this;
         // Use the training data, and do numIteration passes over it. 
-        return await this.sevenFeedData(this.tensor1d(this.training.x), this.tensor1d(this.training.y));
+        return await this.sevenFeedData({ xs: this.tensor1d(this.training.x), ys: this.tensor1d(this.training.y) });
         // return this.data;
         // Once that is done, this has updated our coefficients! 
         // Here you could see what our predictions look like now, and use them!
@@ -231,12 +231,12 @@ export default class FitCurveToData extends ML {
         const error = prediction.sub(labels).square().mean();
         return error;
     }
-    calMetricDerivatives(xs, ys) {
+    calMetricDerivatives({ xs, ys }) {
         // debugger;
         this.learning = this.generateData(this.getArray(this.iniRandomArr));
         this.plotThree();
         // Learn! This is where the step happens, and when the training takes place.
-        this.getCloser(xs, ys);
+        this.getCloser({ xs, ys });
     }
 
     gengerateOptimizer() {

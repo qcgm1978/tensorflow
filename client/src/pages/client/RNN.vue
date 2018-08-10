@@ -111,18 +111,18 @@ export default {
         return;
       }
 
-      this.demo = new AdditionRNNDemo(
+      this.demo = new AdditionRNNDemo({
         digits,
         trainingSize,
         rnnType,
         layers,
-        hiddenSize
-      );
-      await this.demo.train({
+        hiddenSize,
+        callback: this.visualizeAndSave
+      });
+      await this.demo.sevenFeedData({
         iterations: trainIterations,
         batchSize,
         numTestExamples,
-        callback: this.visualizeAndSave,
         stopRequested: this.stopRequested
       });
     },

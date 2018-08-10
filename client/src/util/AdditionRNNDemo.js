@@ -1,7 +1,7 @@
 import CharacterTable from "./CharacterTable";
 import { ML } from './ML';
 export default class AdditionRNNDemo extends ML {
-    constructor(digits, trainingSize, rnnType, layers, hiddenSize) {
+    constructor({ digits, trainingSize, rnnType, layers, hiddenSize, callback }) {
         super({ plot: 'embed' });
         this._stop = false;
         this.digits = digits;
@@ -10,6 +10,8 @@ export default class AdditionRNNDemo extends ML {
         this.hiddenSize = hiddenSize;
         this.rnnType = rnnType;
         this.chars = '0123456789+ ';
+        this.lossValues = [], this.accuracyValues = [], this.examplesPerSecValues = [];
+        this.callback = callback;
         this.split = Math.floor(this.trainingSize * 0.9);
 
         super.generatePattern(this.defineSevenTimeSeries())
@@ -177,7 +179,8 @@ export default class AdditionRNNDemo extends ML {
     set stop(val) {
         this._stop = val;
     }
-    async calMetricDerivatives({ i, iterations, batchSize, numTestExamples, callback, stopRequested }) {
+    async calMetricDerivatives({ i, iterations, batchSize, numTestExamples, stopRequested }) {
+        debugger;
         const beginMs = performance.now();
         const history = await this.model.fit(this.trainXs, this.trainYs, {
             epochs: 1,
@@ -212,34 +215,21 @@ export default class AdditionRNNDemo extends ML {
 
         const examples = [];
         const isCorrect = [];
-        tf.tidy(() => {
+        await tf.tidy(() => {
             const predictOut = this.model.predict(this.testXsForDisplay);
             for (let k = 0; k < numTestExamples; ++k) {
-                const scores =
-                    predictOut
-                        .slice(
-                            [k, 0, 0], [1, predictOut.shape[1], predictOut.shape[2]])
-                        .as2D(predictOut.shape[1], predictOut.shape[2]);
+                const scores = predictOut
+                    .slice([k, 0, 0], [1, predictOut.shape[1], predictOut.shape[2]])
+                    .as2D(predictOut.shape[1], predictOut.shape[2]);
                 const decoded = this.charTable.decode(scores);
                 examples.push(this.testData[k][0] + ' = ' + decoded);
                 isCorrect.push(this.testData[k][1].trim() === decoded.trim());
             }
         });
 
-        callback({
+        this.callback({
             i, trainLoss, trainAccuracy, valLoss, valAccuracy, examplesPerSec, isCorrect, examples
         })
-    }
-    async train({ iterations, batchSize, numTestExamples, callback, stopRequested }) {
-        this.lossValues = [], this.accuracyValues = [], this.examplesPerSecValues = [];
-        for (let i = 0; i < iterations; ++i) {
-            await this.calMetricDerivatives({ i, iterations, batchSize, numTestExamples, callback, stopRequested })
-            await tf.nextFrame();
-            if (this._stop) {
-                this._stop = false;
-                throw Error('the previouse training need stopping');
-            }
-        }
     }
 }
 
