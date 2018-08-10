@@ -121,9 +121,6 @@ export class ML extends GUI {
 
             // debugger;
             this.calMetricDerivatives(xs, ys);
-            // if (iter === this.numIterations - 1) {
-            //     this.data.push({ xs, ys })
-            // }
             // Use tf.nextFrame to not block the browser.
             await tf.nextFrame();
         }

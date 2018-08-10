@@ -177,60 +177,63 @@ export default class AdditionRNNDemo extends ML {
     set stop(val) {
         this._stop = val;
     }
-    async train({ iterations, batchSize, numTestExamples, callback, stopRequested }) {
-        for (let i = 0, lossValues = [], accuracyValues = [], examplesPerSecValues = []; i < iterations; ++i) {
+    async calMetricDerivatives({ i, iterations, batchSize, numTestExamples, callback, stopRequested }) {
+        const beginMs = performance.now();
+        const history = await this.model.fit(this.trainXs, this.trainYs, {
+            epochs: 1,
+            batchSize,
+            validationData: [this.testXs, this.testYs],
+        });
+        const elapsedMs = performance.now() - beginMs;
+        const examplesPerSec = this.testXs.shape[0] / (elapsedMs / 1000);
+        const trainLoss = history.history['loss'][0];
+        const trainAccuracy = history.history['acc'][0];
+        const valLoss = history.history['val_loss'][0];
+        const valAccuracy = history.history['val_acc'][0];
 
-            const beginMs = performance.now();
-            const history = await this.model.fit(this.trainXs, this.trainYs, {
-                epochs: 1,
-                batchSize,
-                validationData: [this.testXs, this.testYs],
-            });
-            const elapsedMs = performance.now() - beginMs;
-            const examplesPerSec = this.testXs.shape[0] / (elapsedMs / 1000);
-            const trainLoss = history.history['loss'][0];
-            const trainAccuracy = history.history['acc'][0];
-            const valLoss = history.history['val_loss'][0];
-            const valAccuracy = history.history['val_acc'][0];
+        this.lossValues.push({ 'epoch': i, 'loss': trainLoss, 'set': 'train' });
+        this.lossValues.push({ 'epoch': i, 'loss': valLoss, 'set': 'validation' });
+        this.examplesPerSecValues.push({ 'epoch': i, 'examples/s': examplesPerSec });
+        this.accuracyValues.push(
+            { 'epoch': i, 'accuracy': trainAccuracy, 'set': 'train' });
+        this.accuracyValues.push(
+            { 'epoch': i, 'accuracy': valAccuracy, 'set': 'validation' });
+        this.plot({ lossValues: this.lossValues, accuracyValues: this.accuracyValues, examplesPerSecValues: this.examplesPerSecValues })
 
-            lossValues.push({ 'epoch': i, 'loss': trainLoss, 'set': 'train' });
-            lossValues.push({ 'epoch': i, 'loss': valLoss, 'set': 'validation' });
-            examplesPerSecValues.push({ 'epoch': i, 'examples/s': examplesPerSec });
-            accuracyValues.push(
-                { 'epoch': i, 'accuracy': trainAccuracy, 'set': 'train' });
-            accuracyValues.push(
-                { 'epoch': i, 'accuracy': valAccuracy, 'set': 'validation' });
-            this.plot({ lossValues, accuracyValues, examplesPerSecValues })
-
-            if (this.testXsForDisplay == null ||
-                this.testXsForDisplay.shape[0] !== numTestExamples) {
-                if (this.textXsForDisplay) {
-                    this.textXsForDisplay.dispose();
-                }
-                this.testXsForDisplay = this.testXs.slice(
-                    [0, 0, 0],
-                    [numTestExamples, this.testXs.shape[1], this.testXs.shape[2]]);
+        if (this.testXsForDisplay == null ||
+            this.testXsForDisplay.shape[0] !== numTestExamples) {
+            if (this.textXsForDisplay) {
+                this.textXsForDisplay.dispose();
             }
+            this.testXsForDisplay = this.testXs.slice(
+                [0, 0, 0],
+                [numTestExamples, this.testXs.shape[1], this.testXs.shape[2]]);
+        }
 
-            const examples = [];
-            const isCorrect = [];
-            tf.tidy(() => {
-                const predictOut = this.model.predict(this.testXsForDisplay);
-                for (let k = 0; k < numTestExamples; ++k) {
-                    const scores =
-                        predictOut
-                            .slice(
-                                [k, 0, 0], [1, predictOut.shape[1], predictOut.shape[2]])
-                            .as2D(predictOut.shape[1], predictOut.shape[2]);
-                    const decoded = this.charTable.decode(scores);
-                    examples.push(this.testData[k][0] + ' = ' + decoded);
-                    isCorrect.push(this.testData[k][1].trim() === decoded.trim());
-                }
-            });
+        const examples = [];
+        const isCorrect = [];
+        tf.tidy(() => {
+            const predictOut = this.model.predict(this.testXsForDisplay);
+            for (let k = 0; k < numTestExamples; ++k) {
+                const scores =
+                    predictOut
+                        .slice(
+                            [k, 0, 0], [1, predictOut.shape[1], predictOut.shape[2]])
+                        .as2D(predictOut.shape[1], predictOut.shape[2]);
+                const decoded = this.charTable.decode(scores);
+                examples.push(this.testData[k][0] + ' = ' + decoded);
+                isCorrect.push(this.testData[k][1].trim() === decoded.trim());
+            }
+        });
 
-            callback({ i, trainLoss, trainAccuracy, valLoss, valAccuracy, examplesPerSec, isCorrect, examples })
-
-
+        callback({
+            i, trainLoss, trainAccuracy, valLoss, valAccuracy, examplesPerSec, isCorrect, examples
+        })
+    }
+    async train({ iterations, batchSize, numTestExamples, callback, stopRequested }) {
+        this.lossValues = [], this.accuracyValues = [], this.examplesPerSecValues = [];
+        for (let i = 0; i < iterations; ++i) {
+            await this.calMetricDerivatives({ i, iterations, batchSize, numTestExamples, callback, stopRequested })
             await tf.nextFrame();
             if (this._stop) {
                 this._stop = false;
