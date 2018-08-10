@@ -1,9 +1,8 @@
-import embed from 'vega-embed';
 import CharacterTable from "./CharacterTable";
 import { ML } from './ML';
 export default class AdditionRNNDemo extends ML {
     constructor(digits, trainingSize, rnnType, layers, hiddenSize) {
-        super()
+        super({ plot: 'embed' })
         this.digits = digits;
         this.trainingSize = trainingSize;
         this.layers = layers;
@@ -173,52 +172,10 @@ export default class AdditionRNNDemo extends ML {
             charTable.encodeBatch(answers, digits + 1),
         ];
     }
-    plot({ lossValues, accuracyValues, examplesPerSecValues }) {
-        embed(
-            '#lossCanvas', {
-                '$schema': 'https://vega.github.io/schema/vega-lite/v2.json',
-                'data': { 'values': lossValues },
-                'mark': 'line',
-                'encoding': {
-                    'x': { 'field': 'epoch', 'type': 'ordinal' },
-                    'y': { 'field': 'loss', 'type': 'quantitative' },
-                    'color': { 'field': 'set', 'type': 'nominal' },
-                },
-                'width': 400,
-            },
-            {});
 
-        embed(
-            '#accuracyCanvas', {
-                '$schema': 'https://vega.github.io/schema/vega-lite/v2.json',
-                'data': { 'values': accuracyValues },
-                'mark': 'line',
-                'encoding': {
-                    'x': { 'field': 'epoch', 'type': 'ordinal' },
-                    'y': { 'field': 'accuracy', 'type': 'quantitative' },
-                    'color': { 'field': 'set', 'type': 'nominal' },
-                },
-                'width': 400,
-            },
-            {});
-        embed(
-            '#examplesPerSecCanvas', {
-                '$schema': 'https://vega.github.io/schema/vega-lite/v2.json',
-                'data': { 'values': examplesPerSecValues },
-                'mark': 'line',
-                'encoding': {
-                    'x': { 'field': 'epoch', 'type': 'ordinal' },
-                    'y': { 'field': 'examples/s', 'type': 'quantitative' },
-                },
-                'width': 400,
-            },
-            {});
-    }
     async train({ iterations, batchSize, numTestExamples, callback }) {
-        const lossValues = [];
-        const accuracyValues = [];
-        const examplesPerSecValues = [];
-        for (let i = 0; i < iterations; ++i) {
+        for (let i = 0, lossValues = [], accuracyValues = [], examplesPerSecValues = []; i < iterations; ++i) {
+
             const beginMs = performance.now();
             const history = await this.model.fit(this.trainXs, this.trainYs, {
                 epochs: 1,

@@ -6,10 +6,11 @@
 import * as tf from '@tensorflow/tfjs';
 window.tf = tf;
 import * as math from 'mathjs';
-import Plotly from 'plotly.js-geo-dist';
+import GUI from './GUI';
 export { tf }
-export class ML {
-    constructor(formula) {
+export class ML extends GUI {
+    constructor({ formula, plot } = {}) {
+        super({ plot })
         this.formula = formula;
         this.data = []
     }
@@ -17,11 +18,7 @@ export class ML {
     static getRandomArbitrary(min, max) {
         return Math.random() * (max - min) + min;
     }
-    plotly(lines, layout) {
-        Plotly.newPlot('graph', lines, layout, {
-            displayModeBar: false
-        });
-    }
+
     getArray(arr) {
         return arr.map(item => item.dataSync()[0])
     }
@@ -118,6 +115,7 @@ export class ML {
     tensor1d(values) {
         return tf.tensor1d(values);
     }
+
     async sevenFeedData(xs, ys) {
         for (let iter = 0; iter < this.numIterations; iter++) {
 

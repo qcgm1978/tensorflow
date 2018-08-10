@@ -1,6 +1,6 @@
 // import './style.css'
 // import $ from "jquery";
-import FitCurveToData from './scaffold';
+import FitCurveToData from './FitCurveToData';
 export default {
     init({ arr, calcNum, coefs, iterations, rate }) {
         this.formula = arr

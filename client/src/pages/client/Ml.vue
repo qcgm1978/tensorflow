@@ -65,7 +65,7 @@
 
 <script>
 import { mapState } from "vuex";
-import MlObj from "../../util/index";
+import MlObj from "../../util/FormulaExtract";
 import { getDefaultData, saveData } from "../../api/ml";
 export default {
   name: "Ml",

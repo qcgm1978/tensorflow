@@ -8,7 +8,7 @@ import { ML } from './ML';
 // import * as tf from '@tensorflow/tfjs';
 export default class FitCurveToData extends ML {
     /**
-     * Implement ML ini, plot and learn
+     * Implement ML ini, plotly and learn
      * @param {object} obj is an object
      * @param  {string} obj.formula the secret formula, parsed by math.js
      * @param  {string} obj.toLearn the coefficients of the formula
@@ -19,7 +19,7 @@ export default class FitCurveToData extends ML {
      * @memberof ML
      */
     constructor({ formula, toLearn, rate, coefs = [], NUM_POINTS = 100, numIterations = 75 }) {
-        super(formula)
+        super({ formula })
         this.toLearn = toLearn;
         this.rate = rate;
         this.NUM_POINTS = NUM_POINTS;
@@ -28,7 +28,7 @@ export default class FitCurveToData extends ML {
         this.def = this.getDef(arr, coefs);
         super.generatePattern(this.defineSevenTimeSeries())
 
-        this.plot()
+        this.plotThree()
     }
     defineSevenTimeSeries() {
         const sevenSteps = [
@@ -64,7 +64,7 @@ export default class FitCurveToData extends ML {
     generateTrainTarget() {
         this.training = this.generateData(this.def)
     }
-    plot() {
+    plotThree() {
         const trace1 = {
             x: this.training.x,
             y: this.training.y,
@@ -119,7 +119,7 @@ export default class FitCurveToData extends ML {
             },
         };
         const lines = [trace1, trace2, trace3];
-        this.plotly(lines, layout);
+        this.plot(lines, layout);
     }
 
 
@@ -234,7 +234,7 @@ export default class FitCurveToData extends ML {
     calMetricDerivatives(xs, ys) {
         // debugger;
         this.learning = this.generateData(this.getArray(this.iniRandomArr));
-        this.plot();
+        this.plotThree();
         // Learn! This is where the step happens, and when the training takes place.
         this.getCloser(xs, ys);
     }
