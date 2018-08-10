@@ -119,7 +119,7 @@ export default {
         hiddenSize,
         callback: this.visualizeAndSave
       });
-      await this.demo.sevenFeedData({
+      this.demo.sevenFeedData({
         iterations: trainIterations,
         batchSize,
         numTestExamples,

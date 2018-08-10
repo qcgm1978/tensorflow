@@ -232,6 +232,3 @@ export default class AdditionRNNDemo extends ML {
         })
     }
 }
-
-
-
