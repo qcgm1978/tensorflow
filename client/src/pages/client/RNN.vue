@@ -65,6 +65,7 @@ export default {
 
   data() {
     return {
+      stopRequested: [],
       examples: [],
       isCorrect: [],
       trainStatus: "",
@@ -83,6 +84,11 @@ export default {
 
   methods: {
     async runAdditionRNNDemo() {
+      if (this.demo) {
+        this.demo.stop = true;
+        this.demo = null;
+        return;
+      }
       const digits = +this.data.digits;
       const trainingSize = +this.data.trainingSize;
       const rnnType = this.data.type;
@@ -105,18 +111,19 @@ export default {
         return;
       }
 
-      const demo = new AdditionRNNDemo(
+      this.demo = new AdditionRNNDemo(
         digits,
         trainingSize,
         rnnType,
         layers,
         hiddenSize
       );
-      await demo.train({
+      await this.demo.train({
         iterations: trainIterations,
         batchSize,
         numTestExamples,
-        callback: this.visualizeAndSave
+        callback: this.visualizeAndSave,
+        stopRequested: this.stopRequested
       });
     },
     visualizeAndSave({

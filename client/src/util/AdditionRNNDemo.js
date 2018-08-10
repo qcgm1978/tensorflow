@@ -2,7 +2,8 @@ import CharacterTable from "./CharacterTable";
 import { ML } from './ML';
 export default class AdditionRNNDemo extends ML {
     constructor(digits, trainingSize, rnnType, layers, hiddenSize) {
-        super({ plot: 'embed' })
+        super({ plot: 'embed' });
+        this._stop = false;
         this.digits = digits;
         this.trainingSize = trainingSize;
         this.layers = layers;
@@ -173,7 +174,10 @@ export default class AdditionRNNDemo extends ML {
         ];
     }
 
-    async train({ iterations, batchSize, numTestExamples, callback }) {
+    set stop(val) {
+        this._stop = val;
+    }
+    async train({ iterations, batchSize, numTestExamples, callback, stopRequested }) {
         for (let i = 0, lossValues = [], accuracyValues = [], examplesPerSecValues = []; i < iterations; ++i) {
 
             const beginMs = performance.now();
@@ -228,6 +232,10 @@ export default class AdditionRNNDemo extends ML {
 
 
             await tf.nextFrame();
+            if (this._stop) {
+                this._stop = false;
+                throw Error('the previouse training need stopping');
+            }
         }
     }
 }
