@@ -10,7 +10,7 @@ var http = require('http');
 /**
  * Get port from environment and store in Express.
  */
-const currentPort = process.env.PORT || '3000';
+const currentPort = process.env.PORT || '3002';
 console.log(`access adress: http://localhost:${currentPort}`)
 var port = normalizePort(currentPort);
 // app.set('port', port);

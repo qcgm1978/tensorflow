@@ -10,6 +10,8 @@ import TF from '@/pages/client/TF'
 import Formula from '@/pages/client/Formula'
 import Start from '@/pages/client/Start';
 import RNN from '@/pages/client/RNN'
+import CartPole from '@/pages/client/CartPole';
+import Color from '@/pages/client/Color'
 Vue.use(Router);
 
 let router = new Router({
@@ -35,6 +37,14 @@ let router = new Router({
         {
           path: 'addition-rnn',
           component: RNN
+        },
+        {
+          path: 'cart-pole',
+          component: CartPole
+        },
+        {
+          path: 'color',
+          component: Color
         }
       ]
     }, {

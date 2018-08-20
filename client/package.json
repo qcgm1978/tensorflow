@@ -21,15 +21,16 @@
   "homepage": "https://github.com/qcgm1978/tensorflow#readme",
   "dependencies": {
     "@tensorflow/tfjs": "^0.12.4",
+    "axios": "^0.17.1",
     "mathjs": "^5.0.4",
+    "p5": "^0.7.1",
     "plotly.js-dist": "^1.39.3",
     "plotly.js-geo-dist": "^1.39.3",
-    "axios": "^0.17.1",
+    "vega-embed": "^3.18.2",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
-    "weixin-pay": "^1.1.7",
-    "vega-embed": "^3.18.2"
+    "weixin-pay": "^1.1.7"
   },
   "devDependencies": {
     "clang-format": "~1.2.2",

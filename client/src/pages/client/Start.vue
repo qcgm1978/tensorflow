@@ -7,6 +7,7 @@
 
 <script>
 import Start from "../../util/start";
+import { getDefaultData, saveData } from "../../api/ml";
 export default {
   name: "start",
 
@@ -27,9 +28,9 @@ export default {
   mounted() {
     // this.myFirstTfjs();
     const start = new Start();
-    debugger;
     start.doALearning().then(data => {
       this.data = data;
+      saveData({ data, url: "/api/ml/saveFitData" });
     });
   }
 };

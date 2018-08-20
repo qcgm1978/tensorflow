@@ -199,7 +199,7 @@ export default {
   }
 };
 </script>
-<style scoped lang="css">
+<style lang="css">
 @import "../../assets/css/material.cyan-teal.min.css";
 body {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;

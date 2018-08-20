@@ -1,4 +1,5 @@
 import axios from '../config/axios-client';
+axios.defaults.baseURL = 'http://localhost:3002';
 function getMlData() {
 	const res = axios.get('/api/ml/getMlData');
 	return new Promise((resolve, reject) => {

@@ -7,6 +7,7 @@ router.get('/api/ml/getRNNDefaultData', ml.getRNNDefaultData);
 router.get('/api/ml/getMlData', ml.getMlData);
 router.post('/api/ml/saveData', ml.saveData);
 router.post('/api/ml/saveRNNData', ml.saveRNNData);
+router.post('/api/ml/saveFitData', async (ctx) => ml.saveData(ctx, 'MlDataFitModel'));
 
 
 module.exports = router;

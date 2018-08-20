@@ -112,12 +112,12 @@ exports.getRNNDefaultData = async (ctx) => {
 	}
 }
 
-exports.saveData = async (ctx) => {
+exports.saveData = async (ctx, MlDataModel = 'MlDataModel') => {
 	try {
-		const data = ctx.request.body.data;
+		const data = ctx.request.body.data || ctx.request.body;
 		const compareData = { ...data };
 		delete compareData.data;
-		const exsitedData = await MlModel.MlDataModel.findOrCreate({
+		const exsitedData = await MlModel[MlDataModel].findOrCreate({
 			where: compareData,
 			// attributes: { exclude: ['data'] },
 			defaults: data

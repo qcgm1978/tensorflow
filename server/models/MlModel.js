@@ -154,3 +154,19 @@ exports.MlRNNDataModel = sequelize.define('rnn-data', {
 }, {
 		timestamps: false,
 	});
+exports.MlDataFitModel = sequelize.define('fit-data', {
+	id: {
+		type: Sequelize.BIGINT,
+		primaryKey: true,
+		allowNull: false,
+		autoIncrement: true
+	},
+	num: {
+		type: Sequelize.FLOAT,
+		allowNull: false
+	},
+
+
+}, {
+		timestamps: false,
+	});
