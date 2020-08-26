@@ -21,7 +21,7 @@
   "homepage": "https://github.com/qcgm1978/tensorflow#readme",
   "dependencies": {
     "@tensorflow/tfjs": "^0.12.4",
-    "axios": "^0.17.1",
+    "axios": "^0.20.0",
     "jquery": "^3.3.1",
     "mathjs": "^5.0.4",
     "plotly.js-dist": "^1.39.3",
