@@ -16,7 +16,7 @@ export default {
 
     },
     async doALearning() {
-        debugger;
+        // debugger;
         return await this.ml.doALearning();
     },
     getData() {

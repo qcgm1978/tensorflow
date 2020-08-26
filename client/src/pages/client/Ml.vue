@@ -91,7 +91,7 @@ export default {
   methods: {
     async doALearning() {
       const data = await MlObj.doALearning();
-      debugger;
+      //debugger;
       saveData({
         data: {
           data,
@@ -138,7 +138,7 @@ export default {
 
   mounted() {
     getDefaultData("/api/ml/getDefaultData?id=1").then(data => {
-      this.formula = data.degreeCoefs;
+      this.formula = eval(data.degreeCoefs);
       this.calcNum = data.points;
       this.iterations = data.iterations;
       this.rate = data.rate;

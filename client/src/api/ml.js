@@ -47,7 +47,7 @@ function getDefaultData(url) {
 }
 
 function saveData({ data, url }) {
-	debugger;
+	// debugger;
 	const res = axios.post(url, data);
 	return new Promise((resolve, reject) => {
 		res
